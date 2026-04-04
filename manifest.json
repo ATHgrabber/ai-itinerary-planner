@@ -1,0 +1,19 @@
+{
+  "name": "旅程AIプランナー",
+  "short_name": "旅程AI",
+  "description": "AIがお客様の旅程を自動提案するプランナーアプリ",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
