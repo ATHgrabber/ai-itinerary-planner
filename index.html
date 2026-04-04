@@ -212,6 +212,13 @@
                 <div class="flex flex-wrap gap-1.5" id="styleTags"></div>
             </div>
 
+            <!-- ── Stopover Cities Section ── -->
+            <div class="mb-3.5">
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">📍 <span data-i18n="stopover_label"></span></label>
+                <div id="stopoverList" class="space-y-2"></div>
+                <button onclick="addStopover()" class="mt-2 text-xs text-purple-600 border border-purple-200 bg-purple-50 hover:bg-purple-100 rounded-lg px-3 py-1.5 font-semibold flex items-center gap-1 transition" data-i18n="stopover_add_btn"></button>
+            </div>
+
             <div class="mb-4">
                 <label class="block text-xs font-semibold text-gray-600 mb-1">✍️ <span data-i18n="notes_label"></span></label>
                 <textarea id="notesInput" rows="3" data-i18n-placeholder="notes_placeholder"
@@ -299,13 +306,19 @@ const I18N = {
         budget_options: ['節約重視（〜3万円）','スタンダード（3〜8万円）','ゆとりあり（8〜15万円）','ラグジュアリー（15万円〜）'],
         style_label: '旅行スタイル（複数選択可）',
         style_tags: ['🏛️ 観光・名所','🍜 グルメ','🌿 自然','🛍️ ショッピング','♨️ 温泉','🏃 アクティビティ','🎭 文化・歴史','🌙 ナイトライフ','📸 フォトジェニック','👨‍👩‍👧 ファミリー'],
+        stopover_label: '途中の立ち寄り地（経由地・宿泊先）',
+        stopover_add_btn: '＋ 経由地を追加',
+        stopover_city_ph: '都市名（例：名古屋）',
+        stopover_hotel_ph: '宿泊施設名（例：ホテルグランコート名古屋）',
+        stopover_url_ph: 'ホテル・民泊のURL（任意）',
+        stopover_no: '経由地',
         notes_label: '特別なご要望・メモ',
         notes_placeholder: '例：子連れ（5歳）、誕生日旅行、魚介アレルギー...',
         generate_btn: '✨ 旅程を生成する',
         result_title: '旅程プラン', pdf_btn: '📄 PDF', copy_btn: '📋 コピー', save_btn2: '💾 保存',
         empty_state: '入力フォームに旅行情報を入力して\n「旅程を生成する」を押してください',
         loading_text: 'AIが旅程を考えています…', loading_subtext: '少々お待ちください',
-        history_title: '保存済み旅程', clear_history_btn: '🗑️ すべて削除',
+        history_title: '保存済み旅程', clear_history_btn: '🗑️ すぽて削除',
         no_history: '保存された旅程はありません',
         tab_form: '入力', tab_result: '旅程', tab_history: '履歴',
         history_show: '表示',
@@ -331,7 +344,7 @@ const I18N = {
 - 交通手段と移動時間・費用
 - 観光スポットの見どころと所要時間
 - 1人あたりの費用概算（宿泊・食事・交通・観光の内訳）
-- 注意点・おすすめの持ち物・季節情報
+- 注意点・おそそめの持ち物・季節情報
 
 マークダウン形式で、【1日目】【2日目】のように整理してください。冒頭に旅行の概要をまとめてください。`,
         user_prompt: (p) => `以下の条件で旅程プランをご提案ください：
@@ -343,6 +356,7 @@ const I18N = {
 - 参加人数：${p.people}
 - 予算目安：${p.budget}
 - 旅行スタイル：${p.styles}
+${p.stopovers && p.stopovers.length > 0 ? `- 途中の立ち寄り地：\n${p.stopovers.map((s, i) => `  ${i+1}. ${s.city}${s.hotel ? `（宿泊先：${s.hotel}${s.url ? ` / ${s.url}` : ''}）` : ''}`).join('\n')}` : ''}
 ${p.notes ? `- 特別なご要望：${p.notes}` : ''}
 
 詳細な旅程プランをお願いします。`,
@@ -361,6 +375,12 @@ ${p.notes ? `- 特別なご要望：${p.notes}` : ''}
         budget_options: ['Budget (under $200)','Standard ($200–$600)','Comfortable ($600–$1,200)','Luxury ($1,200+)'],
         style_label: 'Travel Style (multi-select)',
         style_tags: ['🏛️ Sightseeing','🍜 Food & Dining','🌿 Nature','🛍️ Shopping','♨️ Spa & Relax','🏃 Activities','🎭 Culture & History','🌙 Nightlife','📸 Photo Spots','👨‍👩‍👧 Family'],
+        stopover_label: 'Stopover Cities (with accommodation)',
+        stopover_add_btn: '＋ Add Stopover',
+        stopover_city_ph: 'City (e.g. Nagoya)',
+        stopover_hotel_ph: 'Hotel / Airbnb name',
+        stopover_url_ph: 'Booking URL (optional)',
+        stopover_no: 'Stop',
         notes_label: 'Special Requests / Notes',
         notes_placeholder: 'e.g. With kids (age 5), anniversary trip, seafood allergy...',
         generate_btn: '✨ Generate Itinerary',
@@ -405,6 +425,7 @@ Format in Markdown with Day 1, Day 2 sections. Start with a trip overview.`,
 - Travelers: ${p.people}
 - Budget: ${p.budget}
 - Style: ${p.styles}
+${p.stopovers && p.stopovers.length > 0 ? `- Stopovers:\n${p.stopovers.map((s, i) => `  ${i+1}. ${s.city}${s.hotel ? ` (Stay: ${s.hotel}${s.url ? ` / ${s.url}` : ''})` : ''}`).join('\n')}` : ''}
 ${p.notes ? `- Special requests: ${p.notes}` : ''}
 
 Please provide a comprehensive day-by-day itinerary.`,
@@ -467,6 +488,53 @@ function setLang(lang) {
     currentLang = lang;
     localStorage.setItem('ai_itinerary_lang', lang);
     applyI18n();
+}
+
+// ── Stopover Cities ─────────────────────────────────────────────
+let stopoverCount = 0;
+
+function addStopover() {
+    stopoverCount++;
+    const list = document.getElementById('stopoverList');
+    const idx = stopoverCount;
+    const div = document.createElement('div');
+    div.className = 'stopover-entry border border-purple-100 rounded-xl p-3 bg-purple-50/40 relative';
+    div.dataset.idx = idx;
+    div.innerHTML = `
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-purple-600">📍 ${t('stopover_no')} ${list.children.length + 1}</span>
+            <button onclick="removeStopover(this)" class="text-gray-400 hover:text-red-400 text-base leading-none transition">✕</button>
+        </div>
+        <div class="space-y-1.5">
+            <input type="text" placeholder="${t('stopover_city_ph')}" data-role="city"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-300">
+            <input type="text" placeholder="${t('stopover_hotel_ph')}" data-role="hotel"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-300">
+            <input type="url" placeholder="${t('stopover_url_ph')}" data-role="url"
+                class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-purple-300">
+        </div>`;
+    list.appendChild(div);
+    renumberStopovers();
+}
+
+function removeStopover(btn) {
+    btn.closest('.stopover-entry').remove();
+    renumberStopovers();
+}
+
+function renumberStopovers() {
+    document.querySelectorAll('.stopover-entry').forEach((el, i) => {
+        const label = el.querySelector('span');
+        if (label) label.textContent = `📍 ${t('stopover_no')} ${i + 1}`;
+    });
+}
+
+function getStopoverData() {
+    return [...document.querySelectorAll('.stopover-entry')].map(el => ({
+        city:  el.querySelector('[data-role="city"]')?.value.trim()  || '',
+        hotel: el.querySelector('[data-role="hotel"]')?.value.trim() || '',
+        url:   el.querySelector('[data-role="url"]')?.value.trim()   || '',
+    })).filter(s => s.city);
 }
 
 // ── Mobile Tabs ─────────────────────────────────────────────────
@@ -546,6 +614,7 @@ async function generateItinerary() {
     const notes = document.getElementById('notesInput').value.trim();
     const model = localStorage.getItem('ai_itinerary_model') || 'gpt-4o';
     const selectedStyles = [...document.querySelectorAll('#styleTags input:checked')].map(el => el.value);
+    const stopovers = getStopoverData();
 
     if (!to) { showToast(t('toast_no_dest'), 'error'); document.getElementById('toInput').focus(); return; }
 
@@ -555,7 +624,7 @@ async function generateItinerary() {
         if (diff > 0) duration = `${diff}${t('duration_night')}${diff + 1}${t('duration_day')}`;
         else if (diff === 0) duration = t('duration_daytrip');
     }
-    currentParams = { from, to, startDate, endDate, people, budget, selectedStyles, notes, duration };
+    currentParams = { from, to, startDate, endDate, people, budget, selectedStyles, notes, duration, stopovers };
 
     const dateRange = startDate && endDate
         ? `${startDate} – ${endDate}${duration ? ` (${duration})` : ''}`
@@ -579,7 +648,7 @@ async function generateItinerary() {
                 model,
                 messages: [
                     { role: 'system', content: t('system_prompt') },
-                    { role: 'user', content: t('user_prompt')({ from, to, dateRange, people, budget, styles, notes }) }
+                    { role: 'user', content: t('user_prompt')({ from, to, dateRange, people, budget, styles, notes, stopovers }) }
                 ],
                 stream: true, temperature: 0.75, max_tokens: 4000
             })
@@ -710,6 +779,21 @@ function loadHistory(id) {
         if (item.params.people) document.getElementById('peopleSelect').value = item.params.people;
         if (item.params.budget) document.getElementById('budgetSelect').value = item.params.budget;
         document.getElementById('notesInput').value = item.params.notes || '';
+        // Restore stopovers
+        document.getElementById('stopoverList').innerHTML = '';
+        stopoverCount = 0;
+        if (item.params.stopovers && item.params.stopovers.length > 0) {
+            item.params.stopovers.forEach(s => {
+                addStopover();
+                const entries = document.querySelectorAll('.stopover-entry');
+                const last = entries[entries.length - 1];
+                if (last) {
+                    last.querySelector('[data-role="city"]').value = s.city || '';
+                    last.querySelector('[data-role="hotel"]').value = s.hotel || '';
+                    last.querySelector('[data-role="url"]').value = s.url || '';
+                }
+            });
+        }
     }
     setState('result');
     document.getElementById('itineraryResult').innerHTML = marked.parse(item.content);
