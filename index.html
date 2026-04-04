@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="旅程AI">
+    <meta name="theme-color" content="#667eea">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <title>✈️ 旅程AIプランナー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+        body { font-family: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif; }
+        * { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+
+        /* Prevent iOS input zoom (must be 16px+) */
+        input, select, textarea { font-size: 16px !important; }
+
+        /* iOS safe areas */
+        .safe-top    { padding-top:    max(12px, env(safe-area-inset-top)); }
+        .safe-bottom { padding-bottom: max(8px,  env(safe-area-inset-bottom)); }
+
+        /* ── Mobile panel management ─────────────────── */
+        @media (max-width: 639px) {
+            .mobile-panel { display: none; }
+            .mobile-panel.panel-active { display: block; }
+            .main-grid { display: block !important; }
+        }
+
+        /* ── Tab bar ─────────────────────────────────── */
+        .tab-bar {
+            display: none;
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid #e5e7eb;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        @media (max-width: 639px) { .tab-bar { display: flex; } }
+
+        .tab-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px 6px; color: #9ca3af; font-size: 10px; font-weight: 600; gap: 3px; transition: color 0.15s; border: none; background: none; }
+        .tab-btn .tab-icon { font-size: 22px; line-height: 1; }
+        .tab-btn.tab-active { color: #667eea; }
+        .tab-btn.tab-active .tab-icon { transform: scale(1.1); }
+
+        /* ── Result badge on tab ─────────────────────── */
+        .tab-badge { background: #ef4444; color: white; border-radius: 99px; font-size: 9px; font-weight: 700; padding: 1px 5px; position: absolute; top: 6px; right: calc(50% - 22px); }
+
+        /* ── Markdown rendering ──────────────────────── */
+        .markdown-body h1 { font-size: 1.25rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #1a202c; }
+        .markdown-body h2 { font-size: 1.05rem; font-weight: 700; margin: 1.1rem 0 0.35rem; color: #2d3748; border-bottom: 2px solid #667eea; padding-bottom: 0.25rem; }
+        .markdown-body h3 { font-size: 0.95rem; font-weight: 600; margin: 0.7rem 0 0.25rem; color: #4a5568; }
+        .markdown-body p { margin: 0.35rem 0; line-height: 1.8; color: #374151; }
+        .markdown-body ul { margin: 0.35rem 0 0.35rem 1.3rem; list-style-type: disc; }
+        .markdown-body ol { margin: 0.35rem 0 0.35rem 1.3rem; list-style-type: decimal; }
+        .markdown-body li { margin: 0.2rem 0; line-height: 1.7; color: #374151; }
+        .markdown-body strong { color: #1a202c; font-weight: 700; }
+        .markdown-body em { color: #6b7280; }
+        .markdown-body table { width: 100%; border-collapse: collapse; margin: 0.7rem 0; font-size: 0.82rem; display: block; overflow-x: auto; }
+        .markdown-body th { background: #667eea; color: white; padding: 0.45rem 0.6rem; text-align: left; font-weight: 600; }
+        .markdown-body td { border: 1px solid #e5e7eb; padding: 0.4rem 0.6rem; }
+        .markdown-body tr:nth-child(even) { background: #f9fafb; }
+        .markdown-body blockquote { border-left: 4px solid #667eea; padding: 0.4rem 0.8rem; color: #6b7280; margin: 0.5rem 0; background: #f5f3ff; border-radius: 0 8px 8px 0; }
+        .markdown-body code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.82em; font-family: monospace; color: #7c3aed; }
+        .markdown-body hr { border: none; border-top: 1px solid #e5e7eb; margin: 0.8rem 0; }
+
+        /* ── Style tag checkboxes ────────────────────── */
+        .style-tag input:checked + label { background: #667eea; color: white; border-color: #667eea; }
+
+        /* ── Lang toggle ─────────────────────────────── */
+        .lang-btn.active { background: white; color: #667eea; font-weight: 700; }
+        .lang-btn:not(.active) { background: transparent; color: rgba(255,255,255,0.75); }
+
+        /* ── Typing cursor ───────────────────────────── */
+        .typing-cursor::after { content: '▋'; animation: blink 0.7s step-end infinite; color: #667eea; margin-left: 2px; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+        /* ── Spinner ─────────────────────────────────── */
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .spinner { animation: spin 0.8s linear infinite; }
+
+        /* ── Scrollbar ───────────────────────────────── */
+        .result-scroll::-webkit-scrollbar { width: 4px; }
+        .result-scroll::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 2px; }
+
+        /* ── History card ────────────────────────────── */
+        .history-card { transition: transform 0.12s; }
+        .history-card:active { transform: scale(0.98); }
+
+        /* ── Print ───────────────────────────────────── */
+        @media print {
+            .no-print, .tab-bar { display: none !important; }
+            body { background: white !important; }
+            .result-scroll { max-height: none !important; overflow: visible !important; }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50">
+
+<!-- ═══════════ Settings Modal ═══════════ -->
+<div id="settingsModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden no-print" onclick="if(event.target===this)closeSettings()">
+    <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4">
+        <h2 class="text-base font-bold mb-4 text-gray-800">⚙️ <span data-i18n="settings_title"></span></h2>
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">OpenAI API Key <span class="text-red-400">*</span></label>
+            <input type="password" id="apiKeyInput" placeholder="sk-..."
+                class="w-full border border-gray-300 rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+            <p class="text-xs text-gray-400 mt-1.5" data-i18n="api_key_note"></p>
+        </div>
+        <div class="mb-5">
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5" data-i18n="model_label"></label>
+            <select id="modelSelect" class="w-full border border-gray-300 rounded-xl px-3.5 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <option value="gpt-4o">GPT-4o</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="gpt-4o-mini">GPT-4o Mini</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="saveSettings()" class="flex-1 gradient-bg text-white py-3 rounded-xl text-sm font-bold" data-i18n="save_btn"></button>
+            <button onclick="closeSettings()" class="flex-1 bg-gray-100 text-gray-600 py-3 rounded-xl text-sm font-medium" data-i18n="cancel_btn"></button>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════ Header ═══════════ -->
+<header class="gradient-bg text-white shadow-lg no-print sticky top-0 z-30 safe-top">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <span class="text-2xl">✈️</span>
+            <div>
+                <h1 class="text-base font-bold leading-tight" data-i18n="app_title"></h1>
+                <p class="text-xs text-purple-200 hidden sm:block" data-i18n="app_subtitle"></p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <div class="flex items-center bg-white/10 border border-white/20 rounded-xl p-0.5 text-xs">
+                <button id="langJA" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('ja')">🇯🇵 JP</button>
+                <button id="langEN" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('en')">🇺🇸 EN</button>
+            </div>
+            <button onclick="openSettings()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border border-white/20">
+                ⚙️ <span class="hidden sm:inline" data-i18n="api_settings_btn"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- Print header -->
+<div id="printHeader" style="display:none">
+    <div style="padding:16px 0 10px;border-bottom:2px solid #667eea;margin-bottom:16px;">
+        <h1 style="font-size:1.4rem;font-weight:700;color:#1a202c;">✈️ Itinerary Plan</h1>
+        <p id="printMeta" style="color:#6b7280;font-size:0.85rem;margin-top:4px;"></p>
+    </div>
+</div>
+
+<!-- ═══════════ Main ═══════════ -->
+<main class="max-w-7xl mx-auto px-4 py-4 sm:py-6 pb-28 sm:pb-6 space-y-4 sm:space-y-6">
+
+    <div class="main-grid sm:grid sm:grid-cols-2 sm:gap-6 sm:items-start space-y-4 sm:space-y-0">
+
+        <!-- ── Form Panel ── -->
+        <div id="panel-form" class="mobile-panel panel-active bg-white rounded-2xl shadow-md p-4 sm:p-6 no-print">
+            <h2 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">📝 <span data-i18n="form_title"></span></h2>
+
+            <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">🛫 <span data-i18n="from_label"></span></label>
+                    <input type="text" id="fromInput" data-i18n-placeholder="from_placeholder"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">🛬 <span data-i18n="to_label"></span> <span class="text-red-400">*</span></label>
+                    <input type="text" id="toInput" data-i18n-placeholder="to_placeholder"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">📅 <span data-i18n="start_date_label"></span></label>
+                    <input type="date" id="startDate"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">📅 <span data-i18n="end_date_label"></span></label>
+                    <input type="date" id="endDate"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2.5 mb-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">👥 <span data-i18n="people_label"></span></label>
+                    <select id="peopleSelect" data-i18n-options="people_options"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-300"></select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">💰 <span data-i18n="budget_label"></span></label>
+                    <select id="budgetSelect" data-i18n-options="budget_options"
+                        class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-300"></select>
+                </div>
+            </div>
+
+            <div class="mb-3.5">
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">🎯 <span data-i18n="style_label"></span></label>
+                <div class="flex flex-wrap gap-1.5" id="styleTags"></div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-xs font-semibold text-gray-600 mb-1">✍️ <span data-i18n="notes_label"></span></label>
+                <textarea id="notesInput" rows="3" data-i18n-placeholder="notes_placeholder"
+                    class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none transition"></textarea>
+            </div>
+
+            <button id="generateBtn" onclick="generateItinerary()"
+                class="w-full gradient-bg text-white py-4 rounded-xl font-bold text-base shadow-lg active:opacity-90 active:scale-[0.99] transition-all" data-i18n="generate_btn">
+            </button>
+        </div>
+
+        <!-- ── Result Panel ── -->
+        <div id="panel-result" class="mobile-panel bg-white rounded-2xl shadow-md p-4 sm:p-6 print-container">
+            <div class="flex items-center justify-between mb-3 no-print">
+                <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">🗺️ <span data-i18n="result_title"></span></h2>
+                <div id="exportBtns" class="flex gap-1.5" style="display:none">
+                    <button onclick="printPDF()" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold" data-i18n="pdf_btn"></button>
+                    <button onclick="copyMarkdown()" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold" data-i18n="copy_btn"></button>
+                    <button onclick="saveToHistory()" class="bg-green-50 text-green-600 border border-green-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold" data-i18n="save_btn2"></button>
+                </div>
+            </div>
+
+            <div id="emptyState" class="flex flex-col items-center justify-center py-16 text-gray-300">
+                <span class="text-6xl mb-3">🌏</span>
+                <p class="text-xs text-center leading-relaxed" data-i18n="empty_state"></p>
+            </div>
+
+            <div id="loadingState" class="hidden flex-col items-center justify-center py-16 text-purple-500">
+                <div class="w-11 h-11 rounded-full border-4 border-purple-100 border-t-purple-500 spinner mb-3"></div>
+                <p class="text-sm font-medium" data-i18n="loading_text"></p>
+                <p class="text-xs text-gray-400 mt-1" data-i18n="loading_subtext"></p>
+            </div>
+
+            <div id="resultContainer" class="hidden">
+                <div id="itineraryResult" class="markdown-body text-sm result-scroll overflow-y-auto" style="max-height: min(60vh, 600px)"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── History Panel ── -->
+    <div id="panel-history" class="mobile-panel bg-white rounded-2xl shadow-md p-4 sm:p-6 no-print">
+        <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">📚 <span data-i18n="history_title"></span></h2>
+            <button onclick="clearHistory()" class="text-xs text-gray-400 active:text-red-500 transition" data-i18n="clear_history_btn"></button>
+        </div>
+        <div id="historyList"></div>
+    </div>
+
+</main>
+
+<!-- ═══════════ Mobile Tab Bar ═══════════ -->
+<nav class="tab-bar no-print safe-bottom">
+    <button class="tab-btn tab-active" data-tab="form" onclick="switchTab('form')">
+        <span class="tab-icon">📝</span>
+        <span data-i18n="tab_form"></span>
+    </button>
+    <button class="tab-btn relative" data-tab="result" onclick="switchTab('result')">
+        <span class="tab-icon">🗺️</span>
+        <span data-i18n="tab_result"></span>
+        <span id="resultBadge" class="tab-badge hidden">NEW</span>
+    </button>
+    <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+        <span class="tab-icon">📚</span>
+        <span data-i18n="tab_history"></span>
+    </button>
+</nav>
+
+<!-- Toast -->
+<div id="toastContainer" class="fixed bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none no-print"></div>
+
+<script>
+// ── i18n ────────────────────────────────────────────────────────
+const I18N = {
+    ja: {
+        app_title: '旅程AIプランナー', app_subtitle: 'お客様の旅をAIがプロデュース',
+        api_settings_btn: 'API設定', settings_title: 'API設定',
+        api_key_note: '🔒 キーはこのブラウザのみに保存されます',
+        model_label: '使用モデル', save_btn: '保存する', cancel_btn: 'キャンセル',
+        form_title: '旅行情報を入力',
+        from_label: '出発地', from_placeholder: '東京・羽田',
+        to_label: '目的地', to_placeholder: '京都・大阪',
+        start_date_label: '出発日', end_date_label: '帰着日',
+        people_label: '人数', budget_label: '予算（1人あたり）',
+        people_options: ['1名（一人旅）','2名（カップル・夫婦）','3名','4名（家族・グループ）','5名以上'],
+        budget_options: ['節約重視（〜3万円）','スタンダード（3〜8万円）','ゆとりあり（8〜15万円）','ラグジュアリー（15万円〜）'],
+        style_label: '旅行スタイル（複数選択可）',
+        style_tags: ['🏛️ 観光・名所','🍜 グルメ','🌿 自然','🛍️ ショッピング','♨️ 温泉','🏃 アクティビティ','🎭 文化・歴史','🌙 ナイトライフ','📸 フォトジェニック','👨‍👩‍👧 ファミリー'],
+        notes_label: '特別なご要望・メモ',
+        notes_placeholder: '例：子連れ（5歳）、誕生日旅行、魚介アレルギー...',
+        generate_btn: '✨ 旅程を生成する',
+        result_title: '旅程プラン', pdf_btn: '📄 PDF', copy_btn: '📋 コピー', save_btn2: '💾 保存',
+        empty_state: '入力フォームに旅行情報を入力して\n「旅程を生成する」を押してください',
+        loading_text: 'AIが旅程を考えています…', loading_subtext: '少々お待ちください',
+        history_title: '保存済み旅程', clear_history_btn: '🗑️ すべて削除',
+        no_history: '保存された旅程はありません',
+        tab_form: '入力', tab_result: '旅程', tab_history: '履歴',
+        history_show: '表示',
+        toast_settings_saved: '設定を保存しました ✓',
+        toast_no_key: 'APIキーを設定してください',
+        toast_no_dest: '目的地を入力してください',
+        toast_done: '旅程の生成が完了しました ✓',
+        toast_copied: 'コピーしました ✓',
+        toast_copy_fail: 'コピーに失敗しました',
+        toast_history_saved: '旅程を保存しました 💾',
+        toast_history_loaded: '旅程を読み込みました',
+        toast_history_cleared: '履歴を削除しました',
+        toast_no_api: 'まずAPIキーを設定してください',
+        confirm_clear: 'すべての保存済み旅程を削除しますか？',
+        generating_btn: '⏳ 生成中…',
+        duration_night: '泊', duration_day: '日', duration_daytrip: '日帰り',
+        system_prompt: `あなたはプロの日本人旅行プランナーです。顧客の希望に合わせた詳細な旅程を、自然で読みやすい日本語でご提案ください。
+
+以下を必ず含めてください：
+- 各日の時系列スケジュール（時間帯付き）
+- 具体的なおすすめホテル・宿泊施設（施設名・特徴・価格帯）
+- 具体的なレストラン・食事スポット（店名・料理・価格帯）
+- 交通手段と移動時間・費用
+- 観光スポットの見どころと所要時間
+- 1人あたりの費用概算（宿泊・食事・交通・観光の内訳）
+- 注意点・おすすめの持ち物・季節情報
+
+マークダウン形式で、【1日目】【2日目】のように整理してください。冒頭に旅行の概要をまとめてください。`,
+        user_prompt: (p) => `以下の条件で旅程プランをご提案ください：
+
+【旅行条件】
+- 出発地：${p.from}
+- 目的地：${p.to}
+- 旅行日程：${p.dateRange}
+- 参加人数：${p.people}
+- 予算目安：${p.budget}
+- 旅行スタイル：${p.styles}
+${p.notes ? `- 特別なご要望：${p.notes}` : ''}
+
+詳細な旅程プランをお願いします。`,
+    },
+    en: {
+        app_title: 'AI Itinerary Planner', app_subtitle: 'Your travel, planned by AI',
+        api_settings_btn: 'API', settings_title: 'API Settings',
+        api_key_note: '🔒 Stored only in this browser',
+        model_label: 'Model', save_btn: 'Save', cancel_btn: 'Cancel',
+        form_title: 'Enter Travel Details',
+        from_label: 'Departure', from_placeholder: 'Tokyo / Haneda',
+        to_label: 'Destination', to_placeholder: 'Kyoto / Osaka',
+        start_date_label: 'Depart', end_date_label: 'Return',
+        people_label: 'Travelers', budget_label: 'Budget (per person)',
+        people_options: ['1 person (Solo)','2 persons (Couple)','3 persons','4 persons (Family)','5+ persons'],
+        budget_options: ['Budget (under $200)','Standard ($200–$600)','Comfortable ($600–$1,200)','Luxury ($1,200+)'],
+        style_label: 'Travel Style (multi-select)',
+        style_tags: ['🏛️ Sightseeing','🍜 Food & Dining','🌿 Nature','🛍️ Shopping','♨️ Spa & Relax','🏃 Activities','🎭 Culture & History','🌙 Nightlife','📸 Photo Spots','👨‍👩‍👧 Family'],
+        notes_label: 'Special Requests / Notes',
+        notes_placeholder: 'e.g. With kids (age 5), anniversary trip, seafood allergy...',
+        generate_btn: '✨ Generate Itinerary',
+        result_title: 'Itinerary', pdf_btn: '📄 PDF', copy_btn: '📋 Copy', save_btn2: '💾 Save',
+        empty_state: 'Fill in the travel details\nand tap "Generate Itinerary"',
+        loading_text: 'AI is crafting your itinerary…', loading_subtext: 'This may take a moment',
+        history_title: 'Saved Itineraries', clear_history_btn: '🗑️ Clear All',
+        no_history: 'No saved itineraries yet',
+        tab_form: 'Plan', tab_result: 'Trip', tab_history: 'History',
+        history_show: 'View',
+        toast_settings_saved: 'Settings saved ✓',
+        toast_no_key: 'Please set your API key',
+        toast_no_dest: 'Please enter a destination',
+        toast_done: 'Itinerary generated ✓',
+        toast_copied: 'Copied ✓',
+        toast_copy_fail: 'Failed to copy',
+        toast_history_saved: 'Saved 💾',
+        toast_history_loaded: 'Loaded',
+        toast_history_cleared: 'History cleared',
+        toast_no_api: 'Please set your API key first',
+        confirm_clear: 'Delete all saved itineraries?',
+        generating_btn: '⏳ Generating…',
+        duration_night: ' nights ', duration_day: ' days', duration_daytrip: 'Day trip',
+        system_prompt: `You are a professional travel planner. Create a detailed, day-by-day itinerary in English based on the traveler's preferences.
+
+Include:
+- Hour-by-hour schedule for each day
+- Specific hotel/accommodation recommendations (name, features, price range)
+- Specific restaurant recommendations (name, cuisine, price range)
+- Transportation with travel times and estimated costs
+- Top attractions with highlights and duration
+- Per-person budget breakdown
+- Practical tips and seasonal information
+
+Format in Markdown with Day 1, Day 2 sections. Start with a trip overview.`,
+        user_prompt: (p) => `Please create a detailed travel itinerary:
+
+【Trip Details】
+- Departure: ${p.from}
+- Destination: ${p.to}
+- Dates: ${p.dateRange}
+- Travelers: ${p.people}
+- Budget: ${p.budget}
+- Style: ${p.styles}
+${p.notes ? `- Special requests: ${p.notes}` : ''}
+
+Please provide a comprehensive day-by-day itinerary.`,
+    }
+};
+
+// ── State ───────────────────────────────────────────────────────
+let currentLang = localStorage.getItem('ai_itinerary_lang') || 'ja';
+let currentItinerary = '';
+let currentParams = {};
+let activeTab = 'form';
+
+// ── i18n ────────────────────────────────────────────────────────
+function t(key) { return I18N[currentLang]?.[key] ?? I18N['ja'][key] ?? key; }
+
+function applyI18n() {
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const v = t(el.dataset.i18n);
+        if (typeof v === 'string') el.textContent = v;
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        el.placeholder = t(el.dataset.i18nPlaceholder);
+    });
+    buildStyleTags();
+    rebuildSelect('peopleSelect', t('people_options'), 1);
+    rebuildSelect('budgetSelect', t('budget_options'), 1);
+    document.getElementById('langJA').classList.toggle('active', currentLang === 'ja');
+    document.getElementById('langEN').classList.toggle('active', currentLang === 'en');
+    document.documentElement.lang = currentLang;
+    renderHistory();
+}
+
+function rebuildSelect(id, options, defaultIdx) {
+    const sel = document.getElementById(id);
+    const prev = sel.value;
+    sel.innerHTML = '';
+    options.forEach((opt, i) => {
+        const o = document.createElement('option');
+        o.value = opt; o.textContent = opt;
+        if (i === defaultIdx) o.selected = true;
+        sel.appendChild(o);
+    });
+    if ([...sel.options].some(o => o.value === prev)) sel.value = prev;
+}
+
+function buildStyleTags() {
+    const c = document.getElementById('styleTags');
+    const checked = [...c.querySelectorAll('input:checked')].map(el => el.dataset.idx);
+    c.innerHTML = '';
+    t('style_tags').forEach((style, idx) => {
+        const id = 'style_' + idx;
+        const div = document.createElement('div');
+        div.className = 'style-tag';
+        div.innerHTML = `<input type="checkbox" id="${id}" value="${style}" data-idx="${idx}" class="hidden"${checked.includes(String(idx)) ? ' checked' : ''}><label for="${id}" class="cursor-pointer border border-gray-200 rounded-full px-2.5 py-1 text-xs text-gray-500 hover:border-purple-300 hover:text-purple-600 transition select-none block">${style}</label>`;
+        c.appendChild(div);
+    });
+}
+
+function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('ai_itinerary_lang', lang);
+    applyI18n();
+}
+
+// ── Mobile Tabs ─────────────────────────────────────────────────
+function switchTab(tab) {
+    activeTab = tab;
+    if (window.innerWidth < 640) {
+        document.querySelectorAll('.mobile-panel').forEach(p => p.classList.remove('panel-active'));
+        document.getElementById('panel-' + tab)?.classList.add('panel-active');
+    }
+    document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('tab-active', b.dataset.tab === tab);
+    });
+    if (tab === 'result') {
+        document.getElementById('resultBadge').classList.add('hidden');
+    }
+    // Scroll to top on mobile
+    if (window.innerWidth < 640) window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 640) {
+        document.querySelectorAll('.mobile-panel').forEach(p => p.classList.add('panel-active'));
+    } else {
+        document.querySelectorAll('.mobile-panel').forEach(p => p.classList.remove('panel-active'));
+        document.getElementById('panel-' + activeTab)?.classList.add('panel-active');
+    }
+});
+
+// ── Init ────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+    applyI18n();
+    switchTab('form');
+
+    const base = new Date(); base.setMonth(base.getMonth() + 1);
+    const end = new Date(base); end.setDate(end.getDate() + 3);
+    document.getElementById('startDate').value = base.toISOString().slice(0, 10);
+    document.getElementById('endDate').value = end.toISOString().slice(0, 10);
+
+    const savedKey = localStorage.getItem('ai_itinerary_api_key');
+    const savedModel = localStorage.getItem('ai_itinerary_model') || 'gpt-4o';
+    if (savedKey) document.getElementById('apiKeyInput').value = savedKey;
+    document.getElementById('modelSelect').value = savedModel;
+
+    renderHistory();
+
+    if (!savedKey) setTimeout(() => { openSettings(); showToast(t('toast_no_api'), 'info'); }, 600);
+
+    // Register service worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+});
+
+// ── Settings ────────────────────────────────────────────────────
+function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
+function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
+function saveSettings() {
+    const key = document.getElementById('apiKeyInput').value.trim();
+    if (!key) { showToast(t('toast_no_key'), 'error'); return; }
+    localStorage.setItem('ai_itinerary_api_key', key);
+    localStorage.setItem('ai_itinerary_model', document.getElementById('modelSelect').value);
+    closeSettings();
+    showToast(t('toast_settings_saved'));
+}
+
+// ── Generate ────────────────────────────────────────────────────
+async function generateItinerary() {
+    const apiKey = localStorage.getItem('ai_itinerary_api_key');
+    if (!apiKey) { openSettings(); showToast(t('toast_no_api'), 'error'); return; }
+
+    const from = document.getElementById('fromInput').value.trim() || (currentLang === 'ja' ? '指定なし' : 'Not specified');
+    const to = document.getElementById('toInput').value.trim();
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const people = document.getElementById('peopleSelect').value;
+    const budget = document.getElementById('budgetSelect').value;
+    const notes = document.getElementById('notesInput').value.trim();
+    const model = localStorage.getItem('ai_itinerary_model') || 'gpt-4o';
+    const selectedStyles = [...document.querySelectorAll('#styleTags input:checked')].map(el => el.value);
+
+    if (!to) { showToast(t('toast_no_dest'), 'error'); document.getElementById('toInput').focus(); return; }
+
+    let duration = '';
+    if (startDate && endDate) {
+        const diff = Math.round((new Date(endDate) - new Date(startDate)) / 86400000);
+        if (diff > 0) duration = `${diff}${t('duration_night')}${diff + 1}${t('duration_day')}`;
+        else if (diff === 0) duration = t('duration_daytrip');
+    }
+    currentParams = { from, to, startDate, endDate, people, budget, selectedStyles, notes, duration };
+
+    const dateRange = startDate && endDate
+        ? `${startDate} – ${endDate}${duration ? ` (${duration})` : ''}`
+        : (currentLang === 'ja' ? '未定' : 'TBD');
+    const styles = selectedStyles.length > 0 ? selectedStyles.join(currentLang === 'ja' ? '、' : ', ') : (currentLang === 'ja' ? 'なし（バランス重視）' : 'None (balanced)');
+
+    // Switch to result tab on mobile
+    if (window.innerWidth < 640) switchTab('result');
+
+    setState('loading');
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    btn.textContent = t('generating_btn');
+    currentItinerary = '';
+
+    try {
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+            body: JSON.stringify({
+                model,
+                messages: [
+                    { role: 'system', content: t('system_prompt') },
+                    { role: 'user', content: t('user_prompt')({ from, to, dateRange, people, budget, styles, notes }) }
+                ],
+                stream: true, temperature: 0.75, max_tokens: 4000
+            })
+        });
+        if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error?.message || `HTTP ${res.status}`); }
+
+        setState('result');
+        const resultEl = document.getElementById('itineraryResult');
+        resultEl.innerHTML = '';
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                const data = line.slice(6).trim();
+                if (data === '[DONE]') continue;
+                try {
+                    const json = JSON.parse(data);
+                    const content = json.choices?.[0]?.delta?.content || '';
+                    if (content) {
+                        currentItinerary += content;
+                        resultEl.innerHTML = marked.parse(currentItinerary) + '<span class="typing-cursor"></span>';
+                        resultEl.parentElement.scrollTop = resultEl.parentElement.scrollHeight;
+                    }
+                } catch {}
+            }
+        }
+        resultEl.innerHTML = marked.parse(currentItinerary);
+        showExportButtons(true);
+        showToast(t('toast_done'));
+        // Show badge on result tab if user is on another tab
+        if (activeTab !== 'result') document.getElementById('resultBadge').classList.remove('hidden');
+
+    } catch (err) {
+        setState('empty');
+        showToast('Error: ' + err.message, 'error');
+        if (window.innerWidth < 640) switchTab('form');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = t('generate_btn');
+    }
+}
+
+function setState(state) {
+    document.getElementById('emptyState').classList.toggle('hidden', state !== 'empty');
+    const loadEl = document.getElementById('loadingState');
+    if (state === 'loading') { loadEl.classList.remove('hidden'); loadEl.classList.add('flex'); }
+    else { loadEl.classList.add('hidden'); loadEl.classList.remove('flex'); }
+    document.getElementById('resultContainer').classList.toggle('hidden', state !== 'result');
+    if (state !== 'result') showExportButtons(false);
+}
+function showExportButtons(show) { document.getElementById('exportBtns').style.display = show ? 'flex' : 'none'; }
+
+// ── Export ──────────────────────────────────────────────────────
+function printPDF() {
+    const ph = document.getElementById('printHeader');
+    ph.style.display = 'block';
+    document.getElementById('printMeta').textContent =
+        `${currentParams.to||''} | ${currentParams.startDate||''} – ${currentParams.endDate||''} | ${currentParams.people||''}`;
+    window.print();
+    ph.style.display = 'none';
+}
+function copyMarkdown() {
+    if (!currentItinerary) return;
+    navigator.clipboard.writeText(currentItinerary)
+        .then(() => showToast(t('toast_copied')))
+        .catch(() => showToast(t('toast_copy_fail'), 'error'));
+}
+
+// ── History ─────────────────────────────────────────────────────
+function saveToHistory() {
+    if (!currentItinerary) return;
+    const history = getHistory();
+    const title = `${currentParams.to||''}${currentParams.startDate ? ' '+currentParams.startDate : ''}${currentParams.duration ? ' '+currentParams.duration : ''}`;
+    history.unshift({
+        id: Date.now(), title, lang: currentLang, params: currentParams, content: currentItinerary,
+        savedAt: new Date().toLocaleString(currentLang === 'ja' ? 'ja-JP' : 'en-US', { year:'numeric', month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' })
+    });
+    if (history.length > 30) history.splice(30);
+    localStorage.setItem('ai_itinerary_history', JSON.stringify(history));
+    renderHistory();
+    showToast(t('toast_history_saved'));
+}
+
+function getHistory() { try { return JSON.parse(localStorage.getItem('ai_itinerary_history') || '[]'); } catch { return []; } }
+
+function renderHistory() {
+    const history = getHistory();
+    const c = document.getElementById('historyList');
+    if (history.length === 0) { c.innerHTML = `<p class="text-gray-300 text-xs text-center py-6">${esc(t('no_history'))}</p>`; return; }
+    c.innerHTML = history.map(item => `
+        <div class="history-card flex items-center justify-between bg-gray-50 active:bg-purple-50 rounded-xl p-3 border border-gray-100 mb-2 cursor-pointer" onclick="loadHistory(${item.id})">
+            <div class="flex items-center gap-2.5 flex-1 min-w-0">
+                <span class="text-xl shrink-0">🗺️</span>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <p class="text-xs font-semibold text-gray-700 truncate">${esc(item.title)}</p>
+                        ${item.lang ? `<span class="text-xs bg-purple-100 text-purple-600 px-1.5 py-0.5 rounded-md shrink-0">${item.lang === 'en' ? 'EN' : 'JP'}</span>` : ''}
+                    </div>
+                    <p class="text-xs text-gray-400">${esc(item.savedAt)}</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-1.5 ml-2 shrink-0">
+                <button onclick="event.stopPropagation();loadHistory(${item.id})" class="text-xs text-purple-600 bg-purple-100 px-2.5 py-1.5 rounded-lg font-medium">${esc(t('history_show'))}</button>
+                <button onclick="event.stopPropagation();deleteHistory(${item.id})" class="text-xs text-gray-400 bg-gray-100 px-2 py-1.5 rounded-lg">✕</button>
+            </div>
+        </div>`).join('');
+}
+
+function loadHistory(id) {
+    const item = getHistory().find(h => h.id === id);
+    if (!item) return;
+    currentItinerary = item.content;
+    currentParams = item.params || {};
+    if (item.lang) { currentLang = item.lang; localStorage.setItem('ai_itinerary_lang', item.lang); applyI18n(); }
+    if (item.params) {
+        document.getElementById('fromInput').value = item.params.from || '';
+        document.getElementById('toInput').value = item.params.to || '';
+        document.getElementById('startDate').value = item.params.startDate || '';
+        document.getElementById('endDate').value = item.params.endDate || '';
+        if (item.params.people) document.getElementById('peopleSelect').value = item.params.people;
+        if (item.params.budget) document.getElementById('budgetSelect').value = item.params.budget;
+        document.getElementById('notesInput').value = item.params.notes || '';
+    }
+    setState('result');
+    document.getElementById('itineraryResult').innerHTML = marked.parse(item.content);
+    showExportButtons(true);
+    switchTab('result');
+    showToast(t('toast_history_loaded'));
+}
+
+function deleteHistory(id) {
+    localStorage.setItem('ai_itinerary_history', JSON.stringify(getHistory().filter(h => h.id !== id)));
+    renderHistory();
+}
+function clearHistory() {
+    if (!confirm(t('confirm_clear'))) return;
+    localStorage.removeItem('ai_itinerary_history');
+    renderHistory();
+    showToast(t('toast_history_cleared'));
+}
+
+// ── Utilities ───────────────────────────────────────────────────
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+let toastTimer;
+function showToast(msg, type = 'success') {
+    clearTimeout(toastTimer);
+    const c = document.getElementById('toastContainer');
+    const cls = { success:'bg-gray-800 text-white', error:'bg-red-500 text-white', info:'bg-purple-600 text-white' };
+    c.innerHTML = `<div class="pointer-events-auto ${cls[type]||cls.success} px-5 py-3 rounded-xl shadow-xl text-sm font-medium whitespace-nowrap">${esc(msg)}</div>`;
+    toastTimer = setTimeout(() => { c.innerHTML = ''; }, 3000);
+}
+</script>
+</body>
+</html>
