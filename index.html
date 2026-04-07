@@ -807,7 +807,15 @@ function printPDF() {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var dayCount = 0;
-  undefined
+  document.querySelectorAll('h2').forEach(function(h,i){
+        var num=String(i+1).padStart(2,'0');
+        var txt=h.textContent.trim();
+        var titleText=txt.replace(/^day\s*\d+[:\s\-]*/i,'').trim()||txt;
+        var block=document.createElement('div');
+        block.className='day-block';
+        block.innerHTML='<div class="day-left"><div class="day-lbl">Day</div><div class="day-num">'+num+'</div></div><div class="day-right"><div class="day-title">'+titleText+'</div></div>';
+        h.parentNode.replaceChild(block,h);
+      });
 });
 <\/script>
 ${contentHTML}
