@@ -735,189 +735,113 @@ function printPDF() {
 <title>${escH(destination)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif+JP:wght@600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-body{
-  font-family:'Lato','Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;
-  font-size:9.5pt;color:#2C2C2C;background:#FDFCFA;line-height:1.75;
-  -webkit-print-color-adjust:exact;print-color-adjust:exact;
-}
-
-/* ── Cover ───────────────────────────────────── */
-.cover{
-  background:linear-gradient(150deg,#0F1F40 0%,#162D50 55%,#1E4080 100%);
-  color:white;padding:44px 52px 40px;position:relative;overflow:hidden;
-}
-.cover::before{
-  content:'';position:absolute;top:-60px;right:-60px;
-  width:260px;height:260px;
-  background:radial-gradient(circle,rgba(232,131,74,0.18) 0%,transparent 70%);
-  border-radius:50%;
-}
-.cover::after{
-  content:'';position:absolute;bottom:-40px;left:30%;
-  width:180px;height:180px;
-  background:radial-gradient(circle,rgba(255,255,255,0.04) 0%,transparent 70%);
-  border-radius:50%;
-}
-.cover-eyebrow{
-  font-family:'Montserrat',sans-serif;font-size:7pt;font-weight:700;
-  letter-spacing:3.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);
-  margin-bottom:22px;
-}
-.cover-destination{
-  font-family:'Playfair Display','Noto Serif JP',serif;font-size:34pt;
-  font-weight:700;line-height:1.1;color:#fff;margin-bottom:6px;
-}
-.cover-from{
-  font-size:10.5pt;color:rgba(255,255,255,0.6);margin-bottom:26px;
-  font-weight:300;
-}
-.cover-from strong{color:#E8834A;font-weight:700;}
-.accent-bar{width:44px;height:3px;background:#E8834A;border-radius:2px;margin-bottom:24px;}
-.cover-stats{display:flex;gap:36px;flex-wrap:wrap;position:relative;z-index:1;}
-.cover-stat-label{
-  font-family:'Montserrat',sans-serif;font-size:6.5pt;font-weight:700;
-  letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.38);margin-bottom:3px;
-}
-.cover-stat-value{
-  font-family:'Montserrat',sans-serif;font-size:9.5pt;font-weight:600;color:#fff;
-}
-
-/* ── Print button bar (screen only) ─────────── */
-.print-bar{
-  background:#F4F6FA;padding:14px 52px;display:flex;align-items:center;gap:14px;
-  border-bottom:1px solid #E0E4ED;
-}
-.print-btn{
-  padding:9px 26px;background:#162D50;color:#fff;border:none;border-radius:24px;
-  font-family:'Montserrat',sans-serif;font-size:9.5pt;font-weight:600;
-  cursor:pointer;letter-spacing:0.3px;transition:background 0.2s;
-}
-.print-btn:hover{background:#E8834A;}
-.print-hint{font-size:8.5pt;color:#888;line-height:1.5;}
-
-/* ── Content wrapper ─────────────────────────── */
-.content{padding:0 52px 52px;}
-
-/* ── Overview / h1 ───────────────────────────── */
-h1{
-  font-family:'Playfair Display','Noto Serif JP',serif;font-size:14pt;font-weight:700;
-  color:#162D50;margin:34px 0 10px;padding-bottom:8px;border-bottom:2px solid #E8834A;
-}
-
-/* ── Day headers / h2 — full bleed ──────────── */
-h2{
-  font-family:'Montserrat','Noto Sans JP',sans-serif;font-size:8pt;font-weight:700;
-  text-transform:uppercase;letter-spacing:1.8px;color:#fff;
-  background:#162D50;
-  padding:12px 52px;margin:34px -52px 0;
-  border-left:5px solid #E8834A;
-  page-break-after:avoid;break-after:avoid;
-}
-
-/* ── Section headings / h3 ───────────────────── */
-h3{
-  font-family:'Montserrat','Noto Sans JP',sans-serif;font-size:9pt;font-weight:600;
-  color:#162D50;margin:18px 0 5px;display:flex;align-items:center;gap:7px;
-}
-h3::before{
-  content:'';display:inline-block;width:3px;height:13px;
-  background:#E8834A;border-radius:2px;flex-shrink:0;
-}
-
-/* ── Paragraphs ──────────────────────────────── */
-p{margin:5px 0;color:#3A3A3A;line-height:1.75;}
-
-/* ── Timeline lists ──────────────────────────── */
-ul,ol{margin:6px 0 10px;padding:0;list-style:none;}
-li{
-  padding:6px 0 6px 22px;position:relative;
-  border-bottom:1px solid #F0F0F0;color:#3A3A3A;line-height:1.65;
-}
-li:last-child{border-bottom:none;}
-li::before{
-  content:'▸';position:absolute;left:2px;top:5px;
-  color:#E8834A;font-size:10.5pt;line-height:1.3;
-}
-
-/* ── Bold ────────────────────────────────────── */
-strong{color:#162D50;font-weight:700;}
-
-/* ── Italic ──────────────────────────────────── */
-em{color:#666;font-style:italic;}
-
-/* ── Horizontal rule ─────────────────────────── */
-hr{border:none;border-top:1px solid #EBEBEB;margin:16px 0;}
-
-/* ── Blockquote — tips / notes ───────────────── */
-blockquote{
-  border-left:3px solid #E8834A;background:#FEF9F5;
-  padding:10px 16px;margin:12px 0;border-radius:0 6px 6px 0;
-  color:#5A5A5A;font-style:italic;font-size:9pt;
-}
-
-/* ── Tables ──────────────────────────────────── */
-table{width:100%;border-collapse:collapse;margin:10px 0;font-size:8.5pt;}
-th{
-  background:#162D50;color:#fff;padding:7px 10px;text-align:left;
-  font-family:'Montserrat',sans-serif;font-weight:600;font-size:7.5pt;letter-spacing:0.5px;
-}
-td{padding:6px 10px;border:1px solid #E8E8E8;}
-tr:nth-child(even) td{background:#F7F9FC;}
-
-/* ── Code ────────────────────────────────────── */
-code{background:#F0F4F9;padding:1px 5px;border-radius:3px;font-size:8pt;font-family:monospace;color:#162D50;}
-
-/* ── Footer ──────────────────────────────────── */
-.pdf-footer{
-  margin-top:44px;padding-top:12px;border-top:1px solid #E0E0E0;
-  display:flex;justify-content:space-between;align-items:center;
-  font-size:7.5pt;color:#BBBBBB;
-}
-
-/* ── Print ───────────────────────────────────── */
-@media print{
-  @page{margin:0;size:A4 portrait;}
-  .print-bar{display:none!important;}
-  body{background:#fff;}
-  h2{page-break-before:auto;break-before:auto;}
-  h2,h3,li,p{page-break-inside:avoid;break-inside:avoid;}
-  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}
-  .cover{background:linear-gradient(150deg,#0F1F40 0%,#162D50 55%,#1E4080 100%)!important;}
-  h2{background:#162D50!important;color:#fff!important;}
-  th{background:#162D50!important;color:#fff!important;}
-}
+:root{--navy:#0C1A35;--navy-mid:#1A3356;--gold:#B8922A;--gold-light:#D4AB4E;--gold-pale:#F9F3E6;--ink:#1E1E1E;--muted:#666;--rule:#DDD;--bg:#FDFBF7;}
+body{font-family:'DM Sans','Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;font-size:9.5pt;color:var(--ink);background:var(--bg);line-height:1.8;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.cover{background:var(--navy);color:white;padding:52px 60px 48px;position:relative;overflow:hidden;min-height:210px;}
+.cover .deco-arc{position:absolute;top:-90px;right:-90px;width:340px;height:340px;border-radius:50%;border:1.5px solid rgba(184,146,42,0.22);pointer-events:none;}
+.cover .deco-arc2{position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(184,146,42,0.12);pointer-events:none;}
+.cover .deco-lines{position:absolute;bottom:0;left:0;width:160px;height:80px;overflow:hidden;pointer-events:none;opacity:0.06;}
+.cover-label{font-family:'DM Sans',sans-serif;font-size:6.5pt;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--gold-light);margin-bottom:28px;display:flex;align-items:center;gap:10px;}
+.cover-label::after{content:'';flex:0 0 32px;height:1px;background:var(--gold-light);opacity:0.5;}
+.cover-destination{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:42pt;font-weight:600;font-style:italic;line-height:1.02;color:#fff;letter-spacing:-0.5px;margin-bottom:10px;position:relative;z-index:1;}
+.cover-from{font-size:9.5pt;font-weight:300;color:rgba(255,255,255,0.5);margin-bottom:32px;letter-spacing:0.3px;}
+.cover-from strong{color:var(--gold-light);font-weight:500;}
+.cover-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(184,146,42,0.1) 60%,transparent 100%);margin-bottom:28px;}
+.cover-stats{display:flex;gap:0;flex-wrap:wrap;position:relative;z-index:1;}
+.cover-stat{padding:0 32px 0 0;border-right:1px solid rgba(255,255,255,0.1);margin-right:32px;}
+.cover-stat:last-child{border-right:none;margin-right:0;}
+.cover-stat-label{font-family:'DM Sans',sans-serif;font-size:5.5pt;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:4px;}
+.cover-stat-value{font-family:'DM Sans',sans-serif;font-size:9pt;font-weight:400;color:rgba(255,255,255,0.88);letter-spacing:0.1px;}
+.print-bar{background:#F2EFE9;padding:14px 60px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #DDD8CE;}
+.print-btn{padding:9px 28px;background:var(--navy);color:#fff;border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:9pt;font-weight:500;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s;}
+.print-btn:hover{background:var(--gold);}
+.print-hint{font-size:8pt;color:#999;line-height:1.6;}
+.content{padding:0 60px 60px;}
+h1{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:18pt;font-weight:600;font-style:italic;color:var(--navy);margin:44px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--rule);position:relative;}
+h1::after{content:'';position:absolute;bottom:-1px;left:0;width:48px;height:2px;background:var(--gold);}
+h2{margin:44px -60px 0;padding:0 60px;background:var(--navy);color:#fff;display:flex;align-items:center;page-break-after:avoid;break-after:avoid;position:relative;overflow:hidden;}
+h2::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--gold);}
+h2::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(184,146,42,0.08));}
+.h2-inner{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%;}
+.h2-num{font-family:'Cormorant Garamond',serif;font-size:28pt;font-weight:600;font-style:italic;color:var(--gold-light);line-height:1;flex-shrink:0;min-width:44px;opacity:0.9;}
+.h2-text{font-family:'DM Sans','Noto Sans JP',sans-serif;font-size:8.5pt;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.92);line-height:1.3;}
+h3{font-family:'DM Sans','Noto Sans JP',sans-serif;font-size:8.5pt;font-weight:600;color:var(--navy-mid);margin:20px 0 6px;padding:0 0 6px 12px;border-bottom:1px solid #EDEBE5;position:relative;letter-spacing:0.3px;}
+h3::before{content:'';position:absolute;left:0;top:2px;bottom:6px;width:2.5px;background:var(--gold);border-radius:2px;}
+p{margin:6px 0;color:#2E2E2E;line-height:1.8;}
+ul,ol{margin:8px 0 12px;padding:0;list-style:none;}
+li{padding:5px 0 5px 20px;position:relative;color:#2E2E2E;line-height:1.72;}
+li+li{border-top:1px solid #F4F1EC;}
+li::before{content:'';position:absolute;left:4px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.7;}
+strong{color:var(--navy);font-weight:600;}
+em{color:var(--muted);font-style:italic;}
+hr{border:none;border-top:1px solid #E8E4DC;margin:20px 0;}
+blockquote{background:var(--gold-pale);border-left:3px solid var(--gold);padding:12px 18px;margin:14px 0;border-radius:0 4px 4px 0;color:#4A4A4A;font-size:9pt;line-height:1.7;}
+table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8.5pt;}
+thead{background:var(--navy);}
+th{color:#fff;padding:8px 12px;text-align:left;font-family:'DM Sans',sans-serif;font-weight:500;font-size:7pt;letter-spacing:1px;text-transform:uppercase;}
+td{padding:7px 12px;border-bottom:1px solid #EAE6DE;color:#2E2E2E;}
+tr:nth-child(even) td{background:#F5F2EC;}
+code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-family:'DM Mono',monospace;color:var(--navy);}
+.pdf-footer{margin-top:52px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#C0BAB0;letter-spacing:0.3px;}
+.pdf-footer-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.5;display:inline-block;margin-right:7px;}
+@media print{@page{margin:0;size:A4 portrait;}.print-bar{display:none!important;}body{background:#fff;}h2{page-break-before:auto;break-before:auto;}h2,h3,li,p{page-break-inside:avoid;break-inside:avoid;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}.cover{background:var(--navy)!important;}h2{background:var(--navy)!important;}thead{background:var(--navy)!important;}}
 </style>
 </head>
 <body>
 
 <div class="cover">
-  <div class="cover-eyebrow">✈ AI Travel Itinerary</div>
+  <div class="deco-arc"></div>
+  <div class="deco-arc2"></div>
+  <svg class="deco-lines" viewBox="0 0 160 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="0" x2="-80" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="20" y1="0" x2="-60" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="40" y1="0" x2="-40" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="60" y1="0" x2="-20" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="80" y1="0" x2="0" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="100" y1="0" x2="20" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="120" y1="0" x2="40" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="140" y1="0" x2="60" y2="80" stroke="white" stroke-width="1.5"/>
+    <line x1="160" y1="0" x2="80" y2="80" stroke="white" stroke-width="1.5"/>
+  </svg>
+  <div class="cover-label">✶ ${lang==='ja'?'AI 旅程プランナー':'AI Travel Itinerary'}</div>
   <div class="cover-destination">${escH(destination)}</div>
-  ${fromCity ? `<div class="cover-from">${lang === 'ja' ? '出発地：' : 'from '}<strong>${escH(fromCity)}</strong></div>` : ''}
+  ${fromCity ? `<div class="cover-from">${lang === 'ja' ? '出発地 &mdash; ' : 'from &mdash; '}<strong>${escH(fromCity)}</strong></div>` : ''}
   <div class="accent-bar"></div>
   <div class="cover-stats">
     ${dateStr    ? `<div><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}</div><div class="cover-stat-value">${escH(dateStr)}</div></div>` : ''}
-    ${duration   ? `<div><div class="cover-stat-label">${lang==='ja'?'日程':'Duration'}</div><div class="cover-stat-value">${escH(duration)}</div></div>` : ''}
-    ${people     ? `<div><div class="cover-stat-label">${lang==='ja'?'人数':'Travelers'}</div><div class="cover-stat-value">${escH(people)}</div></div>` : ''}
+  <div class="cover-rule"></div>
+  <div class="cover-stats">
+    ${dateStr    ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}
+    ${duration   ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'日程':'Duration'}
+    ${people     ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'人数':'Travelers'}
   </div>
 </div>
-
 <div class="print-bar">
   <button class="print-btn" onclick="window.print()">🖨&thinsp; ${lang==='ja'?'PDFとして保存':'Save as PDF'}</button>
   <span class="print-hint">${lang==='ja'?'印刷ダイアログ →「詳細設定」→「背景のグラフィック」をオン にしてください。宛先：PDFとして保存 ／ 余白：なし推奨':'Print dialog → More settings → enable "Background graphics" for colors. Destination: Save as PDF · Margins: None'}</span>
 </div>
 
 <div class="content">
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  let dayCount = 0;
+  document.querySelectorAll('h2').forEach(function(h) {
+    dayCount++;
+    var num = String(dayCount).padStart(2,'0');
+    var txt = h.textContent;
+    h.innerHTML = '<div class="h2-inner"><span class="h2-num">' + num + '<\/span><span class="h2-text">' + txt + '<\/span><\/div>';
+  });
+});
+<\/script>
 ${contentHTML}
 <div class="pdf-footer">
-  <span>✈ AI Travel Planner</span>
-  <span>${escH(generatedDate)}</span>
-</div>
-</div>
+  <div><span class="pdf-footer-dot"><\/span> AI Travel Planner<\/div>
+  <span>${escH(generatedDate)}<\/span>
+<\/div>
+<\/div>
 
 </body>
 </html>`;
