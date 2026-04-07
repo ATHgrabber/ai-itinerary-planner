@@ -762,7 +762,7 @@ body{font-family:'DM Sans','Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif
 .content{padding:0 60px 60px;}
 h1{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:18pt;font-weight:600;font-style:italic;color:var(--navy);margin:44px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--rule);position:relative;}
 h1::after{content:'';position:absolute;bottom:-1px;left:0;width:48px;height:2px;background:var(--gold);}
-h2{margin:44px -60px 0;padding:0 60px;background:var(--navy);color:#fff;display:flex;align-items:center;page-break-after:avoid;break-after:avoid;position:relative;overflow:hidden;}
+h2{margin:0 -60px 0;padding:0 60px;background:var(--navy);color:#fff;display:flex;align-items:center;page-break-before:always;break-before:page;page-break-after:avoid;break-after:avoid;position:relative;overflow:hidden;}
 h2::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--gold);}
 h2::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(184,146,42,0.08));}
 .h2-inner{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%;}
@@ -787,7 +787,7 @@ tr:nth-child(even) td{background:#F5F2EC;}
 code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-family:'DM Mono',monospace;color:var(--navy);}
 .pdf-footer{margin-top:52px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#C0BAB0;letter-spacing:0.3px;}
 .pdf-footer-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.5;display:inline-block;margin-right:7px;}
-@media print{@page{margin:0;size:A4 portrait;}.print-bar{display:none!important;}body{background:#fff;}h2{page-break-before:auto;break-before:auto;}h2,h3,li,p{page-break-inside:avoid;break-inside:avoid;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}.cover{background:var(--navy)!important;}h2{background:var(--navy)!important;}thead{background:var(--navy)!important;}}
+@media print{@page{margin:0;size:A4 portrait;}.print-bar{display:none!important;}body{background:#fff;}h2,h3,li,p{page-break-inside:avoid;break-inside:avoid;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}.cover{background:var(--navy)!important;}h2{background:var(--navy)!important;}thead{background:var(--navy)!important;}}
 </style>
 </head>
 <body>
