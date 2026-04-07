@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="旅程AI">
+    <meta name="apple-mobile-web-app-title" content="æç¨AI">
     <meta name="theme-color" content="#667eea">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon.svg">
-    <title>✈️ 旅程AIプランナー</title>
+    <title>âï¸ æç¨AIãã©ã³ãã¼</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
     <style>
@@ -26,14 +26,14 @@
         .safe-top    { padding-top:    max(12px, env(safe-area-inset-top)); }
         .safe-bottom { padding-bottom: max(8px,  env(safe-area-inset-bottom)); }
 
-        /* ── Mobile panel management ─────────────────── */
+        /* ââ Mobile panel management âââââââââââââââââââ */
         @media (max-width: 639px) {
             .mobile-panel { display: none; }
             .mobile-panel.panel-active { display: block; }
             .main-grid { display: block !important; }
         }
 
-        /* ── Tab bar ─────────────────────────────────── */
+        /* ââ Tab bar âââââââââââââââââââââââââââââââââââ */
         .tab-bar {
             display: none;
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
@@ -49,10 +49,10 @@
         .tab-btn.tab-active { color: #667eea; }
         .tab-btn.tab-active .tab-icon { transform: scale(1.1); }
 
-        /* ── Result badge on tab ─────────────────────── */
+        /* ââ Result badge on tab âââââââââââââââââââââââ */
         .tab-badge { background: #ef4444; color: white; border-radius: 99px; font-size: 9px; font-weight: 700; padding: 1px 5px; position: absolute; top: 6px; right: calc(50% - 22px); }
 
-        /* ── Markdown rendering ──────────────────────── */
+        /* ââ Markdown rendering ââââââââââââââââââââââââ */
         .markdown-body h1 { font-size: 1.25rem; font-weight: 700; margin: 1rem 0 0.5rem; color: #1a202c; }
         .markdown-body h2 { font-size: 1.05rem; font-weight: 700; margin: 1.1rem 0 0.35rem; color: #2d3748; border-bottom: 2px solid #667eea; padding-bottom: 0.25rem; }
         .markdown-body h3 { font-size: 0.95rem; font-weight: 600; margin: 0.7rem 0 0.25rem; color: #4a5568; }
@@ -70,30 +70,30 @@
         .markdown-body code { background: #f3f4f6; padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.82em; font-family: monospace; color: #7c3aed; }
         .markdown-body hr { border: none; border-top: 1px solid #e5e7eb; margin: 0.8rem 0; }
 
-        /* ── Style tag checkboxes ────────────────────── */
+        /* ââ Style tag checkboxes ââââââââââââââââââââââ */
         .style-tag input:checked + label { background: #667eea; color: white; border-color: #667eea; }
 
-        /* ── Lang toggle ─────────────────────────────── */
+        /* ââ Lang toggle âââââââââââââââââââââââââââââââ */
         .lang-btn.active { background: white; color: #667eea; font-weight: 700; }
         .lang-btn:not(.active) { background: transparent; color: rgba(255,255,255,0.75); }
 
-        /* ── Typing cursor ───────────────────────────── */
-        .typing-cursor::after { content: '▋'; animation: blink 0.7s step-end infinite; color: #667eea; margin-left: 2px; }
+        /* ââ Typing cursor âââââââââââââââââââââââââââââ */
+        .typing-cursor::after { content: 'â'; animation: blink 0.7s step-end infinite; color: #667eea; margin-left: 2px; }
         @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-        /* ── Spinner ─────────────────────────────────── */
+        /* ââ Spinner âââââââââââââââââââââââââââââââââââ */
         @keyframes spin { to { transform: rotate(360deg); } }
         .spinner { animation: spin 0.8s linear infinite; }
 
-        /* ── Scrollbar ───────────────────────────────── */
+        /* ââ Scrollbar âââââââââââââââââââââââââââââââââ */
         .result-scroll::-webkit-scrollbar { width: 4px; }
         .result-scroll::-webkit-scrollbar-thumb { background: #c4b5fd; border-radius: 2px; }
 
-        /* ── History card ────────────────────────────── */
+        /* ââ History card ââââââââââââââââââââââââââââââ */
         .history-card { transition: transform 0.12s; }
         .history-card:active { transform: scale(0.98); }
 
-        /* ── Print ───────────────────────────────────── */
+        /* ââ Print âââââââââââââââââââââââââââââââââââââ */
         @media print {
             .no-print, .tab-bar { display: none !important; }
             body { background: white !important; }
@@ -103,10 +103,10 @@
 </head>
 <body class="min-h-screen bg-gradient-to-br from-slate-50 to-purple-50">
 
-<!-- ═══════════ Settings Modal ═══════════ -->
+<!-- âââââââââââ Settings Modal âââââââââââ -->
 <div id="settingsModal" class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center hidden no-print" onclick="if(event.target===this)closeSettings()">
     <div class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4">
-        <h2 class="text-base font-bold mb-4 text-gray-800">⚙️ <span data-i18n="settings_title"></span></h2>
+        <h2 class="text-base font-bold mb-4 text-gray-800">âï¸ <span data-i18n="settings_title"></span></h2>
         <input type="hidden" id="apiKeyInput" value="">
         <div class="mb-5">
             <label class="block text-sm font-semibold text-gray-700 mb-1.5" data-i18n="model_label"></label>
@@ -131,11 +131,11 @@
     </div>
 </div>
 
-<!-- ═══════════ Header ═══════════ -->
+<!-- âââââââââââ Header âââââââââââ -->
 <header class="gradient-bg text-white shadow-lg no-print sticky top-0 z-30 safe-top">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2.5">
-            <span class="text-2xl">✈️</span>
+            <span class="text-2xl">âï¸</span>
             <div>
                 <h1 class="text-base font-bold leading-tight" data-i18n="app_title"></h1>
                 <p class="text-xs text-purple-200 hidden sm:block" data-i18n="app_subtitle"></p>
@@ -143,11 +143,11 @@
         </div>
         <div class="flex items-center gap-2">
             <div class="flex items-center bg-white/10 border border-white/20 rounded-xl p-0.5 text-xs">
-                <button id="langJA" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('ja')">🇯🇵 JP</button>
-                <button id="langEN" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('en')">🇺🇸 EN</button>
+                <button id="langJA" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('ja')">ð¯ðµ JP</button>
+                <button id="langEN" class="lang-btn px-2.5 py-1.5 rounded-lg font-semibold" onclick="setLang('en')">ðºð¸ EN</button>
             </div>
             <button onclick="openSettings()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-xl text-xs font-medium flex items-center gap-1.5 border border-white/20">
-                ⚙️ <span class="hidden sm:inline" data-i18n="api_settings_btn"></span>
+                âï¸ <span class="hidden sm:inline" data-i18n="api_settings_btn"></span>
             </button>
         </div>
     </div>
@@ -156,28 +156,28 @@
 <!-- Print header -->
 <div id="printHeader" style="display:none">
     <div style="padding:16px 0 10px;border-bottom:2px solid #667eea;margin-bottom:16px;">
-        <h1 style="font-size:1.4rem;font-weight:700;color:#1a202c;">✈️ Itinerary Plan</h1>
+        <h1 style="font-size:1.4rem;font-weight:700;color:#1a202c;">âï¸ Itinerary Plan</h1>
         <p id="printMeta" style="color:#6b7280;font-size:0.85rem;margin-top:4px;"></p>
     </div>
 </div>
 
-<!-- ═══════════ Main ═══════════ -->
+<!-- âââââââââââ Main âââââââââââ -->
 <main class="max-w-7xl mx-auto px-4 py-4 sm:py-6 pb-28 sm:pb-6 space-y-4 sm:space-y-6">
 
     <div class="main-grid sm:grid sm:grid-cols-2 sm:gap-6 sm:items-start space-y-4 sm:space-y-0">
 
-        <!-- ── Form Panel ── -->
+        <!-- ââ Form Panel ââ -->
         <div id="panel-form" class="mobile-panel panel-active bg-white rounded-2xl shadow-md p-4 sm:p-6 no-print">
-            <h2 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">📝 <span data-i18n="form_title"></span></h2>
+            <h2 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">ð <span data-i18n="form_title"></span></h2>
 
             <div class="grid grid-cols-2 gap-2.5 mb-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">🛫 <span data-i18n="from_label"></span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð« <span data-i18n="from_label"></span></label>
                     <input type="text" id="fromInput" data-i18n-placeholder="from_placeholder"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">🛬 <span data-i18n="to_label"></span> <span class="text-red-400">*</span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð¬ <span data-i18n="to_label"></span> <span class="text-red-400">*</span></label>
                     <input type="text" id="toInput" data-i18n-placeholder="to_placeholder"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
                 </div>
@@ -185,12 +185,12 @@
 
             <div class="grid grid-cols-2 gap-2.5 mb-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">📅 <span data-i18n="start_date_label"></span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð <span data-i18n="start_date_label"></span></label>
                     <input type="date" id="startDate"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">📅 <span data-i18n="end_date_label"></span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð <span data-i18n="end_date_label"></span></label>
                     <input type="date" id="endDate"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 transition">
                 </div>
@@ -198,31 +198,31 @@
 
             <div class="grid grid-cols-2 gap-2.5 mb-3.5">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">👥 <span data-i18n="people_label"></span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð¥ <span data-i18n="people_label"></span></label>
                     <select id="peopleSelect" data-i18n-options="people_options"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-300"></select>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-gray-600 mb-1">💰 <span data-i18n="budget_label"></span></label>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">ð° <span data-i18n="budget_label"></span></label>
                     <select id="budgetSelect" data-i18n-options="budget_options"
                         class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-300"></select>
                 </div>
             </div>
 
             <div class="mb-3.5">
-                <label class="block text-xs font-semibold text-gray-600 mb-1.5">🎯 <span data-i18n="style_label"></span></label>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">ð¯ <span data-i18n="style_label"></span></label>
                 <div class="flex flex-wrap gap-1.5" id="styleTags"></div>
             </div>
 
-            <!-- ── Stopover Cities Section ── -->
+            <!-- ââ Stopover Cities Section ââ -->
             <div class="mb-3.5">
-                <label class="block text-xs font-semibold text-gray-600 mb-1.5">📍 <span data-i18n="stopover_label"></span></label>
+                <label class="block text-xs font-semibold text-gray-600 mb-1.5">ð <span data-i18n="stopover_label"></span></label>
                 <div id="stopoverList" class="space-y-2"></div>
                 <button onclick="addStopover()" class="mt-2 text-xs text-purple-600 border border-purple-200 bg-purple-50 hover:bg-purple-100 rounded-lg px-3 py-1.5 font-semibold flex items-center gap-1 transition" data-i18n="stopover_add_btn"></button>
             </div>
 
             <div class="mb-4">
-                <label class="block text-xs font-semibold text-gray-600 mb-1">✍️ <span data-i18n="notes_label"></span></label>
+                <label class="block text-xs font-semibold text-gray-600 mb-1">âï¸ <span data-i18n="notes_label"></span></label>
                 <textarea id="notesInput" rows="3" data-i18n-placeholder="notes_placeholder"
                     class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 resize-none transition"></textarea>
             </div>
@@ -232,10 +232,10 @@
             </button>
         </div>
 
-        <!-- ── Result Panel ── -->
+        <!-- ââ Result Panel ââ -->
         <div id="panel-result" class="mobile-panel bg-white rounded-2xl shadow-md p-4 sm:p-6 print-container">
             <div class="flex items-center justify-between mb-3 no-print">
-                <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">🗺️ <span data-i18n="result_title"></span></h2>
+                <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">ðºï¸ <span data-i18n="result_title"></span></h2>
                 <div id="exportBtns" class="flex gap-1.5" style="display:none">
                     <button onclick="printPDF()" class="bg-red-50 text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold" data-i18n="pdf_btn"></button>
                     <button onclick="copyMarkdown()" class="bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold" data-i18n="copy_btn"></button>
@@ -244,7 +244,7 @@
             </div>
 
             <div id="emptyState" class="flex flex-col items-center justify-center py-16 text-gray-300">
-                <span class="text-6xl mb-3">🌏</span>
+                <span class="text-6xl mb-3">ð</span>
                 <p class="text-xs text-center leading-relaxed" data-i18n="empty_state"></p>
             </div>
 
@@ -260,10 +260,10 @@
         </div>
     </div>
 
-    <!-- ── History Panel ── -->
+    <!-- ââ History Panel ââ -->
     <div id="panel-history" class="mobile-panel bg-white rounded-2xl shadow-md p-4 sm:p-6 no-print">
         <div class="flex items-center justify-between mb-3">
-            <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">📚 <span data-i18n="history_title"></span></h2>
+            <h2 class="text-sm font-bold text-gray-700 flex items-center gap-1.5">ð <span data-i18n="history_title"></span></h2>
             <button onclick="clearHistory()" class="text-xs text-gray-400 active:text-red-500 transition" data-i18n="clear_history_btn"></button>
         </div>
         <div id="historyList"></div>
@@ -271,19 +271,19 @@
 
 </main>
 
-<!-- ═══════════ Mobile Tab Bar ═══════════ -->
+<!-- âââââââââââ Mobile Tab Bar âââââââââââ -->
 <nav class="tab-bar no-print safe-bottom">
     <button class="tab-btn tab-active" data-tab="form" onclick="switchTab('form')">
-        <span class="tab-icon">📝</span>
+        <span class="tab-icon">ð</span>
         <span data-i18n="tab_form"></span>
     </button>
     <button class="tab-btn relative" data-tab="result" onclick="switchTab('result')">
-        <span class="tab-icon">🗺️</span>
+        <span class="tab-icon">ðºï¸</span>
         <span data-i18n="tab_result"></span>
         <span id="resultBadge" class="tab-badge hidden">NEW</span>
     </button>
     <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
-        <span class="tab-icon">📚</span>
+        <span class="tab-icon">ð</span>
         <span data-i18n="tab_history"></span>
     </button>
 </nav>
@@ -292,86 +292,86 @@
 <div id="toastContainer" class="fixed bottom-24 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none no-print"></div>
 
 <script>
-// ── i18n ────────────────────────────────────────────────────────
+// ââ i18n ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 const I18N = {
     ja: {
-        app_title: '旅程AIプランナー', app_subtitle: 'お客様の旅をAIがプロデュース',
-        api_settings_btn: 'API設定', settings_title: 'API設定',
-        api_key_note: '🔒 キーはこのブラウザのみに保存されます',
-        model_label: '使用モデル', save_btn: '保存する', cancel_btn: 'キャンセル',
-        form_title: '旅行情報を入力',
-        from_label: '出発地', from_placeholder: '東京・羽田',
-        to_label: '目的地', to_placeholder: '京都・大阪',
-        start_date_label: '出発日', end_date_label: '帰着日',
-        people_label: '人数', budget_label: '予算（1人あたり）',
-        people_options: ['1名（一人旅）','2名（カップル・夫婦）','3名','4名（家族・グループ）','5名以上'],
-        budget_options: ['節約重視（〜3万円）','スタンダード（3〜8万円）','ゆとりあり（8〜15万円）','ラグジュアリー（15万円〜）'],
-        style_label: '旅行スタイル（複数選択可）',
-        style_tags: ['🏛️ 観光・名所','🍜 グルメ','🌿 自然','🛍️ ショッピング','♨️ 温泉','🏃 アクティビティ','🎭 文化・歴史','🌙 ナイトライフ','📸 フォトジェニック','👨‍👩‍👧 ファミリー'],
-        stopover_label: '途中の立ち寄り地（経由地・宿泊先）',
-        stopover_add_btn: '＋ 経由地を追加',
-        stopover_city_ph: '都市名（例：名古屋）',
-        stopover_hotel_ph: '宿泊施設名（例：ホテルグランコート名古屋）',
-        stopover_url_ph: 'ホテル・民泊のURL（任意）',
-        stopover_no: '経由地',
-        notes_label: '特別なご要望・メモ',
-        notes_placeholder: '例：子連れ（5歳）、誕生日旅行、駘介アレルギー...',
-        generate_btn: '✨ 旅程を生成する',
-        result_title: '旅程プラン', pdf_btn: '📄 PDFを生成', copy_btn: '📋 コピー', save_btn2: '💾 保存',
-        empty_state: '入力フォームに旅行情報を入力して\n「旅程を生成する」を押してください',
-        loading_text: 'AIが旅程を考えています…', loading_subtext: '少々お待ちください',
-        history_title: '保存済み旅程', clear_history_btn: '🗑️ すべて削除',
-        no_history: '保存された旅程はありません',
-        tab_form: '入力', tab_result: '旅程', tab_history: '履歴',
-        history_show: '表示',
-        toast_settings_saved: '設定を保存しました ✓',
-        toast_no_key: 'APIキーを設定してください',
-        toast_no_dest: '目的地を入力してください',
-        toast_done: '旅程の生成が完了しました ✓',
-        toast_copied: 'コピーしました ✓',
-        toast_copy_fail: 'コピーに失敗しました',
-        toast_history_saved: '旅程を保存しました 💾',
-        toast_history_loaded: '旅程を読み込みました',
-        toast_history_cleared: '履歴を削除しました',
-        toast_no_api: 'まずAPIキーを設定してください',
-        confirm_clear: 'すべての保存済み旅程を削除しますか？',
-        generating_btn: '⏳ 生成中…',
-        duration_night: '泊', duration_day: '日', duration_daytrip: '日帰り',
-        system_prompt: `あなたはプロの日本人旅行プランナーです。顧客の希望に合わせた詳細な旅程を、自然で読みやすい日本語でご提案ください。
+        app_title: 'æç¨AIãã©ã³ãã¼', app_subtitle: 'ãå®¢æ§ã®æãAIããã­ãã¥ã¼ã¹',
+        api_settings_btn: 'APIè¨­å®', settings_title: 'APIè¨­å®',
+        api_key_note: 'ð ã­ã¼ã¯ãã®ãã©ã¦ã¶ã®ã¿ã«ä¿å­ããã¾ã',
+        model_label: 'ä½¿ç¨ã¢ãã«', save_btn: 'ä¿å­ãã', cancel_btn: 'ã­ã£ã³ã»ã«',
+        form_title: 'æè¡æå ±ãå¥å',
+        from_label: 'åºçºå°', from_placeholder: 'æ±äº¬ã»ç¾½ç°',
+        to_label: 'ç®çå°', to_placeholder: 'äº¬é½ã»å¤§éª',
+        start_date_label: 'åºçºæ¥', end_date_label: 'å¸°çæ¥',
+        people_label: 'äººæ°', budget_label: 'äºç®ï¼1äººãããï¼',
+        people_options: ['1åï¼ä¸äººæï¼','2åï¼ã«ããã«ã»å¤«å©¦ï¼','3å','4åï¼å®¶æã»ã°ã«ã¼ãï¼','5åä»¥ä¸'],
+        budget_options: ['ç¯ç´éè¦ï¼ã3ä¸åï¼','ã¹ã¿ã³ãã¼ãï¼3ã8ä¸åï¼','ãã¨ãããï¼8ã15ä¸åï¼','ã©ã°ã¸ã¥ã¢ãªã¼ï¼15ä¸åãï¼'],
+        style_label: 'æè¡ã¹ã¿ã¤ã«ï¼è¤æ°é¸æå¯ï¼',
+        style_tags: ['ðï¸ è¦³åã»åæ','ð ã°ã«ã¡','ð¿ èªç¶','ðï¸ ã·ã§ããã³ã°','â¨ï¸ æ¸©æ³','ð ã¢ã¯ãã£ããã£','ð­ æåã»æ­´å²','ð ãã¤ãã©ã¤ã','ð¸ ãã©ãã¸ã§ããã¯','ð¨âð©âð§ ãã¡ããªã¼'],
+        stopover_label: 'éä¸­ã®ç«ã¡å¯ãå°ï¼çµç±å°ã»å®¿æ³åï¼',
+        stopover_add_btn: 'ï¼ çµç±å°ãè¿½å ',
+        stopover_city_ph: 'é½å¸åï¼ä¾ï¼åå¤å±ï¼',
+        stopover_hotel_ph: 'å®¿æ³æ½è¨­åï¼ä¾ï¼ããã«ã°ã©ã³ã³ã¼ãåå¤å±ï¼',
+        stopover_url_ph: 'ããã«ã»æ°æ³ã®URLï¼ä»»æï¼',
+        stopover_no: 'çµç±å°',
+        notes_label: 'ç¹å¥ãªãè¦æã»ã¡ã¢',
+        notes_placeholder: 'ä¾ï¼å­é£ãï¼5æ­³ï¼ãèªçæ¥æè¡ãé§ä»ã¢ã¬ã«ã®ã¼...',
+        generate_btn: 'â¨ æç¨ãçæãã',
+        result_title: 'æç¨ãã©ã³', pdf_btn: 'ð PDFãçæ', copy_btn: 'ð ã³ãã¼', save_btn2: 'ð¾ ä¿å­',
+        empty_state: 'å¥åãã©ã¼ã ã«æè¡æå ±ãå¥åãã¦\nãæç¨ãçæããããæ¼ãã¦ãã ãã',
+        loading_text: 'AIãæç¨ãèãã¦ãã¾ãâ¦', loading_subtext: 'å°ããå¾ã¡ãã ãã',
+        history_title: 'ä¿å­æ¸ã¿æç¨', clear_history_btn: 'ðï¸ ãã¹ã¦åé¤',
+        no_history: 'ä¿å­ãããæç¨ã¯ããã¾ãã',
+        tab_form: 'å¥å', tab_result: 'æç¨', tab_history: 'å±¥æ­´',
+        history_show: 'è¡¨ç¤º',
+        toast_settings_saved: 'è¨­å®ãä¿å­ãã¾ãã â',
+        toast_no_key: 'APIã­ã¼ãè¨­å®ãã¦ãã ãã',
+        toast_no_dest: 'ç®çå°ãå¥åãã¦ãã ãã',
+        toast_done: 'æç¨ã®çæãå®äºãã¾ãã â',
+        toast_copied: 'ã³ãã¼ãã¾ãã â',
+        toast_copy_fail: 'ã³ãã¼ã«å¤±æãã¾ãã',
+        toast_history_saved: 'æç¨ãä¿å­ãã¾ãã ð¾',
+        toast_history_loaded: 'æç¨ãèª­ã¿è¾¼ã¿ã¾ãã',
+        toast_history_cleared: 'å±¥æ­´ãåé¤ãã¾ãã',
+        toast_no_api: 'ã¾ãAPIã­ã¼ãè¨­å®ãã¦ãã ãã',
+        confirm_clear: 'ãã¹ã¦ã®ä¿å­æ¸ã¿æç¨ãåé¤ãã¾ããï¼',
+        generating_btn: 'â³ çæä¸­â¦',
+        duration_night: 'æ³', duration_day: 'æ¥', duration_daytrip: 'æ¥å¸°ã',
+        system_prompt: `ããªãã¯ãã­ã®æ¥æ¬äººæè¡ãã©ã³ãã¼ã§ããé¡§å®¢ã®å¸æã«åãããè©³ç´°ãªæç¨ããèªç¶ã§èª­ã¿ãããæ¥æ¬èªã§ãææ¡ãã ããã
 
-以下を必ず含めてください：
-- 各日の時系列スケジュール（時間帯付き）
-- 具体的なおすすめホテル・宿泊施設（施設名・特徴・価格帯）
-- 具体的なレストラン・食事スポット（店名・料理・価格帯）
-- 交通手段と移動時間・費用
-- 観光スポットの見どころと所要時間
-- 1人あたりの費用概算（宿泊・食事・交通・観光の内訳）
-- 注意点・おすすめの持ち物・季節情報
+ä»¥ä¸ãå¿ãå«ãã¦ãã ããï¼
+- åæ¥ã®æç³»åã¹ã±ã¸ã¥ã¼ã«ï¼æéå¸¯ä»ãï¼
+- å·ä½çãªããããããã«ã»å®¿æ³æ½è¨­ï¼æ½è¨­åã»ç¹å¾´ã»ä¾¡æ ¼å¸¯ï¼
+- å·ä½çãªã¬ã¹ãã©ã³ã»é£äºã¹ãããï¼åºåã»æçã»ä¾¡æ ¼å¸¯ï¼
+- äº¤éææ®µã¨ç§»åæéã»è²»ç¨
+- è¦³åã¹ãããã®è¦ã©ããã¨æè¦æé
+- 1äººãããã®è²»ç¨æ¦ç®ï¼å®¿æ³ã»é£äºã»äº¤éã»è¦³åã®åè¨³ï¼
+- æ³¨æç¹ã»ããããã®æã¡ç©ã»å­£ç¯æå ±
 
-Markdownの見出しは必ず以下の形式にしてください：
-- 冒頭の旅行概要は \`# 旅程概要\` または \`# Trip Overview\`（h1）
-- 各日程は \`## 1日目：〇〇\` のように \`##\`（h2）で始める
-- 交通・宿泊・食事などの小見出しは \`### 🚄 移動\`, \`### 🏨 宿泊\`, \`### 🍽️ 食事\` のように \`###\`（h3）で記載
+Markdownã®è¦åºãã¯å¿ãä»¥ä¸ã®å½¢å¼ã«ãã¦ãã ããï¼
+- åé ­ã®æè¡æ¦è¦ã¯ \`# æç¨æ¦è¦\` ã¾ãã¯ \`# Trip Overview\`ï¼h1ï¼
+- åæ¥ç¨ã¯ \`## 1æ¥ç®ï¼ãã\` ã®ããã« \`##\`ï¼h2ï¼ã§å§ãã
+- äº¤éã»å®¿æ³ã»é£äºãªã©ã®å°è¦åºãã¯ \`### ð ç§»å\`, \`### ð¨ å®¿æ³\`, \`### ð½ï¸ é£äº\` ã®ããã« \`###\`ï¼h3ï¼ã§è¨è¼
 
-この見出し構造を厳守してください。`,
-        user_prompt: (p) => `以下の条件で旅程プランをご提案ください：
+ãã®è¦åºãæ§é ãå³å®ãã¦ãã ããã`,
+        user_prompt: (p) => `ä»¥ä¸ã®æ¡ä»¶ã§æç¨ãã©ã³ããææ¡ãã ããï¼
 
-【旅行条件】
-- 出発地：${p.from}
-- 目的地：${p.to}
-- 旅行日程：${p.dateRange}
-- 参加人数：${p.people}
-- 予算目安：${p.budget}
-- 旅行スタイル：${p.styles}
-${p.stopovers && p.stopovers.length > 0 ? `- 途中の立ち寄り地：\n${p.stopovers.map((s, i) => `  ${i+1}. ${s.city}${s.hotel ? `（宿泊先：${s.hotel}${s.url ? ` / ${s.url}` : ''}）` : ''}`).join('\n')}` : ''}
-${p.notes ? `- 特別なご要望：${p.notes}` : ''}
+ãæè¡æ¡ä»¶ã
+- åºçºå°ï¼${p.from}
+- ç®çå°ï¼${p.to}
+- æè¡æ¥ç¨ï¼${p.dateRange}
+- åå äººæ°ï¼${p.people}
+- äºç®ç®å®ï¼${p.budget}
+- æè¡ã¹ã¿ã¤ã«ï¼${p.styles}
+${p.stopovers && p.stopovers.length > 0 ? `- éä¸­ã®ç«ã¡å¯ãå°ï¼\n${p.stopovers.map((s, i) => `  ${i+1}. ${s.city}${s.hotel ? `ï¼å®¿æ³åï¼${s.hotel}${s.url ? ` / ${s.url}` : ''}ï¼` : ''}`).join('\n')}` : ''}
+${p.notes ? `- ç¹å¥ãªãè¦æï¼${p.notes}` : ''}
 
-詳細な旅程プランをお願いします。`,
+è©³ç´°ãªæç¨ãã©ã³ããé¡ããã¾ãã`,
     },
     en: {
         app_title: 'AI Itinerary Planner', app_subtitle: 'Your travel, planned by AI',
         api_settings_btn: 'API', settings_title: 'API Settings',
-        api_key_note: '🔒 Stored only in this browser',
+        api_key_note: 'ð Stored only in this browser',
         model_label: 'Model', save_btn: 'Save', cancel_btn: 'Cancel',
         form_title: 'Enter Travel Details',
         from_label: 'Departure', from_placeholder: 'Tokyo / Haneda',
@@ -379,37 +379,37 @@ ${p.notes ? `- 特別なご要望：${p.notes}` : ''}
         start_date_label: 'Depart', end_date_label: 'Return',
         people_label: 'Travelers', budget_label: 'Budget (per person)',
         people_options: ['1 person (Solo)','2 persons (Couple)','3 persons','4 persons (Family)','5+ persons'],
-        budget_options: ['Budget (under $200)','Standard ($200–$600)','Comfortable ($600–$1,200)','Luxury ($1,200+)'],
+        budget_options: ['Budget (under $200)','Standard ($200â$600)','Comfortable ($600â$1,200)','Luxury ($1,200+)'],
         style_label: 'Travel Style (multi-select)',
-        style_tags: ['🏛️ Sightseeing','🍜 Food & Dining','🌿 Nature','🛍️ Shopping','♨️ Spa & Relax','🏃 Activities','🎭 Culture & History','🌙 Nightlife','📸 Photo Spots','👨‍👩‍👧 Family'],
+        style_tags: ['ðï¸ Sightseeing','ð Food & Dining','ð¿ Nature','ðï¸ Shopping','â¨ï¸ Spa & Relax','ð Activities','ð­ Culture & History','ð Nightlife','ð¸ Photo Spots','ð¨âð©âð§ Family'],
         stopover_label: 'Stopover Cities (with accommodation)',
-        stopover_add_btn: '＋ Add Stopover',
+        stopover_add_btn: 'ï¼ Add Stopover',
         stopover_city_ph: 'City (e.g. Nagoya)',
         stopover_hotel_ph: 'Hotel / Airbnb name',
         stopover_url_ph: 'Booking URL (optional)',
         stopover_no: 'Stop',
         notes_label: 'Special Requests / Notes',
         notes_placeholder: 'e.g. With kids (age 5), anniversary trip, seafood allergy...',
-        generate_btn: '✨ Generate Itinerary',
-        result_title: 'Itinerary', pdf_btn: '📄 Generate PDF', copy_btn: '📋 Copy', save_btn2: '💾 Save',
+        generate_btn: 'â¨ Generate Itinerary',
+        result_title: 'Itinerary', pdf_btn: 'ð Generate PDF', copy_btn: 'ð Copy', save_btn2: 'ð¾ Save',
         empty_state: 'Fill in the travel details\nand tap "Generate Itinerary"',
-        loading_text: 'AI is crafting your itinerary…', loading_subtext: 'This may take a moment',
-        history_title: 'Saved Itineraries', clear_history_btn: '🗑️ Clear All',
+        loading_text: 'AI is crafting your itineraryâ¦', loading_subtext: 'This may take a moment',
+        history_title: 'Saved Itineraries', clear_history_btn: 'ðï¸ Clear All',
         no_history: 'No saved itineraries yet',
         tab_form: 'Plan', tab_result: 'Trip', tab_history: 'History',
         history_show: 'View',
-        toast_settings_saved: 'Settings saved ✓',
+        toast_settings_saved: 'Settings saved â',
         toast_no_key: 'Please set your API key',
         toast_no_dest: 'Please enter a destination',
-        toast_done: 'Itinerary generated ✓',
-        toast_copied: 'Copied ✓',
+        toast_done: 'Itinerary generated â',
+        toast_copied: 'Copied â',
         toast_copy_fail: 'Failed to copy',
-        toast_history_saved: 'Saved 💾',
+        toast_history_saved: 'Saved ð¾',
         toast_history_loaded: 'Loaded',
         toast_history_cleared: 'History cleared',
         toast_no_api: 'Please set your API key first',
         confirm_clear: 'Delete all saved itineraries?',
-        generating_btn: '⏳ Generating…',
+        generating_btn: 'â³ Generatingâ¦',
         duration_night: ' nights ', duration_day: ' days', duration_daytrip: 'Day trip',
         system_prompt: `You are a professional travel planner. Create a detailed, day-by-day itinerary in English based on the traveler's preferences.
 
@@ -423,14 +423,14 @@ Include:
 - Practical tips and seasonal information
 
 Use these Markdown heading levels exactly:
-- \`# Trip Overview\` — opening summary (h1)
-- \`## Day 1: City Name\` — each day header (h2, required)
-- \`### 🚄 Transportation\`, \`### 🏨 Accommodation\`, \`### 🍽️ Dining\`, \`### 🗺️ Sightseeing\` — sub-sections (h3)
+- \`# Trip Overview\` â opening summary (h1)
+- \`## Day 1: City Name\` â each day header (h2, required)
+- \`### ð Transportation\`, \`### ð¨ Accommodation\`, \`### ð½ï¸ Dining\`, \`### ðºï¸ Sightseeing\` â sub-sections (h3)
 
 Strictly follow this heading structure.`,
         user_prompt: (p) => `Please create a detailed travel itinerary:
 
-【Trip Details】
+ãTrip Detailsã
 - Departure: ${p.from}
 - Destination: ${p.to}
 - Dates: ${p.dateRange}
@@ -444,13 +444,13 @@ Please provide a comprehensive day-by-day itinerary.`,
     }
 };
 
-// ── State ───────────────────────────────────────────────────────
+// ââ State âââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 let currentLang = localStorage.getItem('ai_itinerary_lang') || 'ja';
 let currentItinerary = '';
 let currentParams = {};
 let activeTab = 'form';
 
-// ── i18n ────────────────────────────────────────────────────────
+// ââ i18n ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function t(key) { return I18N[currentLang]?.[key] ?? I18N['ja'][key] ?? key; }
 
 function applyI18n() {
@@ -502,7 +502,7 @@ function setLang(lang) {
     applyI18n();
 }
 
-// ── Stopover Cities ─────────────────────────────────────────────
+// ââ Stopover Cities âââââââââââââââââââââââââââââââââââââââââââââ
 let stopoverCount = 0;
 
 function addStopover() {
@@ -514,8 +514,8 @@ function addStopover() {
     div.dataset.idx = idx;
     div.innerHTML = `
         <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-bold text-purple-600">📍 ${t('stopover_no')} ${list.children.length + 1}</span>
-            <button onclick="removeStopover(this)" class="text-gray-400 hover:text-red-400 text-base leading-none transition">✕</button>
+            <span class="text-xs font-bold text-purple-600">ð ${t('stopover_no')} ${list.children.length + 1}</span>
+            <button onclick="removeStopover(this)" class="text-gray-400 hover:text-red-400 text-base leading-none transition">â</button>
         </div>
         <div class="space-y-1.5">
             <input type="text" placeholder="${t('stopover_city_ph')}" data-role="city"
@@ -537,7 +537,7 @@ function removeStopover(btn) {
 function renumberStopovers() {
     document.querySelectorAll('.stopover-entry').forEach((el, i) => {
         const label = el.querySelector('span');
-        if (label) label.textContent = `📍 ${t('stopover_no')} ${i + 1}`;
+        if (label) label.textContent = `ð ${t('stopover_no')} ${i + 1}`;
     });
 }
 
@@ -549,7 +549,7 @@ function getStopoverData() {
     })).filter(s => s.city);
 }
 
-// ── Mobile Tabs ─────────────────────────────────────────────────
+// ââ Mobile Tabs âââââââââââââââââââââââââââââââââââââââââââââââââ
 function switchTab(tab) {
     activeTab = tab;
     if (window.innerWidth < 640) {
@@ -575,7 +575,7 @@ window.addEventListener('resize', () => {
     }
 });
 
-// ── Init ────────────────────────────────────────────────────────
+// ââ Init ââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 document.addEventListener('DOMContentLoaded', () => {
     applyI18n();
     switchTab('form');
@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// ── Settings ────────────────────────────────────────────────────
+// ââ Settings ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function openSettings() { document.getElementById('settingsModal').classList.remove('hidden'); }
 function closeSettings() { document.getElementById('settingsModal').classList.add('hidden'); }
 function saveSettings() {
@@ -607,10 +607,10 @@ function saveSettings() {
     showToast(t('toast_settings_saved'));
 }
 
-// ── Generate ────────────────────────────────────────────────────
+// ââ Generate ââââââââââââââââââââââââââââââââââââââââââââââââââââ
 async function generateItinerary() {
 
-    const from = document.getElementById('fromInput').value.trim() || (currentLang === 'ja' ? '指定なし' : 'Not specified');
+    const from = document.getElementById('fromInput').value.trim() || (currentLang === 'ja' ? 'æå®ãªã' : 'Not specified');
     const to = document.getElementById('toInput').value.trim();
     const startDate = document.getElementById('startDate').value;
     const endDate = document.getElementById('endDate').value;
@@ -632,9 +632,9 @@ async function generateItinerary() {
     currentParams = { from, to, startDate, endDate, people, budget, selectedStyles, notes, duration, stopovers };
 
     const dateRange = startDate && endDate
-        ? `${startDate} – ${endDate}${duration ? ` (${duration})` : ''}`
-        : (currentLang === 'ja' ? '未定' : 'TBD');
-    const styles = selectedStyles.length > 0 ? selectedStyles.join(currentLang === 'ja' ? '、' : ', ') : (currentLang === 'ja' ? 'なし（バランス重視）' : 'None (balanced)');
+        ? `${startDate} â ${endDate}${duration ? ` (${duration})` : ''}`
+        : (currentLang === 'ja' ? 'æªå®' : 'TBD');
+    const styles = selectedStyles.length > 0 ? selectedStyles.join(currentLang === 'ja' ? 'ã' : ', ') : (currentLang === 'ja' ? 'ãªãï¼ãã©ã³ã¹éè¦ï¼' : 'None (balanced)');
 
     // Switch to result tab on mobile
     if (window.innerWidth < 640) switchTab('result');
@@ -714,14 +714,14 @@ function setState(state) {
 }
 function showExportButtons(show) { document.getElementById('exportBtns').style.display = show ? 'flex' : 'none'; }
 
-// ── Export ──────────────────────────────────────────────────────
+// ââ Export ââââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function printPDF() {
     const lang = currentLang;
     const p = currentParams;
     const escH = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    const destination = p.to || (lang === 'ja' ? '旅程プラン' : 'Travel Itinerary');
+    const destination = p.to || (lang === 'ja' ? 'æç¨ãã©ã³' : 'Travel Itinerary');
     const fromCity   = p.from || '';
-    const dateStr    = (p.startDate && p.endDate) ? `${p.startDate}  →  ${p.endDate}` : '';
+    const dateStr    = (p.startDate && p.endDate) ? `${p.startDate}  â  ${p.endDate}` : '';
     const duration   = p.duration || '';
     const people     = p.people || '';
     const generatedDate = new Date().toLocaleDateString(lang === 'ja' ? 'ja-JP' : 'en-US', {year:'numeric',month:'long',day:'numeric'});
@@ -737,57 +737,49 @@ function printPDF() {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif+JP:wght@600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--navy:#0C1A35;--navy-mid:#1A3356;--gold:#B8922A;--gold-light:#D4AB4E;--gold-pale:#F9F3E6;--ink:#1E1E1E;--muted:#666;--rule:#DDD;--bg:#FDFBF7;}
-body{font-family:'DM Sans','Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;font-size:9.5pt;color:var(--ink);background:var(--bg);line-height:1.8;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-.cover{background:var(--navy);color:white;padding:52px 60px 48px;position:relative;overflow:hidden;min-height:210px;}
-.cover .deco-arc{position:absolute;top:-90px;right:-90px;width:340px;height:340px;border-radius:50%;border:1.5px solid rgba(184,146,42,0.22);pointer-events:none;}
-.cover .deco-arc2{position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;border:1px solid rgba(184,146,42,0.12);pointer-events:none;}
-.cover .deco-lines{position:absolute;bottom:0;left:0;width:160px;height:80px;overflow:hidden;pointer-events:none;opacity:0.06;}
-.cover-label{font-family:'DM Sans',sans-serif;font-size:6.5pt;font-weight:500;letter-spacing:4px;text-transform:uppercase;color:var(--gold-light);margin-bottom:28px;display:flex;align-items:center;gap:10px;}
-.cover-label::after{content:'';flex:0 0 32px;height:1px;background:var(--gold-light);opacity:0.5;}
-.cover-destination{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:42pt;font-weight:600;font-style:italic;line-height:1.02;color:#fff;letter-spacing:-0.5px;margin-bottom:10px;position:relative;z-index:1;}
-.cover-from{font-size:9.5pt;font-weight:300;color:rgba(255,255,255,0.5);margin-bottom:32px;letter-spacing:0.3px;}
-.cover-from strong{color:var(--gold-light);font-weight:500;}
-.cover-rule{width:100%;height:1px;background:linear-gradient(90deg,var(--gold) 0%,rgba(184,146,42,0.1) 60%,transparent 100%);margin-bottom:28px;}
-.cover-stats{display:flex;gap:0;flex-wrap:wrap;position:relative;z-index:1;}
-.cover-stat{padding:0 32px 0 0;border-right:1px solid rgba(255,255,255,0.1);margin-right:32px;}
-.cover-stat:last-child{border-right:none;margin-right:0;}
-.cover-stat-label{font-family:'DM Sans',sans-serif;font-size:5.5pt;font-weight:500;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:4px;}
-.cover-stat-value{font-family:'DM Sans',sans-serif;font-size:9pt;font-weight:400;color:rgba(255,255,255,0.88);letter-spacing:0.1px;}
-.print-bar{background:#F2EFE9;padding:14px 60px;display:flex;align-items:center;gap:16px;border-bottom:1px solid #DDD8CE;}
-.print-btn{padding:9px 28px;background:var(--navy);color:#fff;border:none;border-radius:2px;font-family:'DM Sans',sans-serif;font-size:9pt;font-weight:500;cursor:pointer;letter-spacing:0.5px;transition:background 0.2s;}
-.print-btn:hover{background:var(--gold);}
-.print-hint{font-size:8pt;color:#999;line-height:1.6;}
-.content{padding:0 60px 60px;}
-h1{font-family:'Cormorant Garamond','Noto Serif JP',serif;font-size:18pt;font-weight:600;font-style:italic;color:var(--navy);margin:44px 0 14px;padding-bottom:12px;border-bottom:1px solid var(--rule);position:relative;}
-h1::after{content:'';position:absolute;bottom:-1px;left:0;width:48px;height:2px;background:var(--gold);}
-h2{margin:0 -60px 0;padding:0 60px;background:var(--navy);color:#fff;display:flex;align-items:center;page-break-before:always;break-before:page;page-break-after:avoid;break-after:avoid;position:relative;overflow:hidden;}
-h2::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--gold);}
-h2::after{content:'';position:absolute;top:0;right:0;bottom:0;width:60px;background:linear-gradient(90deg,transparent,rgba(184,146,42,0.08));}
-.h2-inner{display:flex;align-items:center;gap:20px;padding:14px 0;width:100%;}
-.h2-num{font-family:'Cormorant Garamond',serif;font-size:28pt;font-weight:600;font-style:italic;color:var(--gold-light);line-height:1;flex-shrink:0;min-width:44px;opacity:0.9;}
-.h2-text{font-family:'DM Sans','Noto Sans JP',sans-serif;font-size:8.5pt;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.92);line-height:1.3;}
-h3{font-family:'DM Sans','Noto Sans JP',sans-serif;font-size:8.5pt;font-weight:600;color:var(--navy-mid);margin:20px 0 6px;padding:0 0 6px 12px;border-bottom:1px solid #EDEBE5;position:relative;letter-spacing:0.3px;}
-h3::before{content:'';position:absolute;left:0;top:2px;bottom:6px;width:2.5px;background:var(--gold);border-radius:2px;}
-p{margin:6px 0;color:#2E2E2E;line-height:1.8;}
-ul,ol{margin:8px 0 12px;padding:0;list-style:none;}
-li{padding:5px 0 5px 20px;position:relative;color:#2E2E2E;line-height:1.72;}
-li+li{border-top:1px solid #F4F1EC;}
-li::before{content:'';position:absolute;left:4px;top:12px;width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.7;}
-strong{color:var(--navy);font-weight:600;}
-em{color:var(--muted);font-style:italic;}
-hr{border:none;border-top:1px solid #E8E4DC;margin:20px 0;}
-blockquote{background:var(--gold-pale);border-left:3px solid var(--gold);padding:12px 18px;margin:14px 0;border-radius:0 4px 4px 0;color:#4A4A4A;font-size:9pt;line-height:1.7;}
-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:8.5pt;}
-thead{background:var(--navy);}
-th{color:#fff;padding:8px 12px;text-align:left;font-family:'DM Sans',sans-serif;font-weight:500;font-size:7pt;letter-spacing:1px;text-transform:uppercase;}
-td{padding:7px 12px;border-bottom:1px solid #EAE6DE;color:#2E2E2E;}
-tr:nth-child(even) td{background:#F5F2EC;}
-code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-family:'DM Mono',monospace;color:var(--navy);}
-.pdf-footer{margin-top:52px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;font-size:7.5pt;color:#C0BAB0;letter-spacing:0.3px;}
-.pdf-footer-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:0.5;display:inline-block;margin-right:7px;}
-@media print{@page{margin:0;size:A4 portrait;}.print-bar{display:none!important;}body{background:#fff;}h2,h3,li,p{page-break-inside:avoid;break-inside:avoid;}*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important;}.cover{background:var(--navy)!important;}h2{background:var(--navy)!important;}thead{background:var(--navy)!important;}}
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+  :root{--navy:#0D1B2A;--navy-mid:#1B2E45;--gold:#C29132;--gold-light:#E5B86D;--cream:#FAF7F2;--text:#2C2C2C;--border:#D4C5A9;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',Arial,sans-serif;background:#fff;color:var(--text);font-size:10pt;line-height:1.6;}
+  .cover{page-break-after:always;break-after:page;height:297mm;display:flex;flex-direction:column;background:var(--navy);position:relative;overflow:hidden;}
+  .cover::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(135deg,transparent,transparent 48px,rgba(194,145,50,0.06) 48px,rgba(194,145,50,0.06) 49px);}
+  .cover::after{content:'';position:absolute;bottom:-60px;right:-60px;width:320px;height:320px;border-radius:50%;background:rgba(194,145,50,0.07);}
+  .cover-inner{position:relative;display:flex;flex-direction:column;justify-content:center;align-items:center;flex:1;padding:60px;text-align:center;}
+  .cover-eyebrow{font-size:7.5pt;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;}
+  .cover-title{font-family:'Playfair Display',Georgia,serif;font-size:38pt;font-weight:700;color:#fff;line-height:1.1;margin-bottom:18px;}
+  .cover-sub{font-family:'Playfair Display',Georgia,serif;font-size:14pt;font-style:italic;color:var(--gold-light);margin-bottom:40px;}
+  .cover-rule{width:64px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:0 auto 40px;}
+  .cover-chips{display:flex;gap:32px;justify-content:center;}
+  .cover-chip{text-align:center;}
+  .cover-chip-label{font-size:6.5pt;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:5px;}
+  .cover-chip-value{font-size:10pt;font-weight:500;color:#fff;}
+  .cover-foot{position:relative;padding:18px 60px;border-top:1px solid rgba(194,145,50,0.25);display:flex;justify-content:space-between;align-items:center;}
+  .cover-foot-text{font-size:7.5pt;color:rgba(255,255,255,0.35);letter-spacing:1px;}
+  .cover-foot-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);opacity:0.6;}
+  .content{padding:0 48px 40px;}
+  .day-block{page-break-before:always;break-before:page;page-break-after:avoid;break-after:avoid;display:grid;grid-template-columns:130px 1fr;margin:0 -48px 28px;}
+  .day-left{background:var(--navy);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px 12px;position:relative;}
+  .day-left::after{content:'';position:absolute;right:-14px;top:50%;transform:translateY(-50%);width:0;height:0;border-style:solid;border-width:14px 0 14px 14px;border-color:transparent transparent transparent var(--navy);}
+  .day-lbl{font-size:6.5pt;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+  .day-num{font-family:'Playfair Display',Georgia,serif;font-size:34pt;font-weight:700;color:#fff;line-height:1;}
+  .day-right{background:var(--navy-mid);display:flex;flex-direction:column;justify-content:center;padding:20px 28px;}
+  .day-title{font-family:'Playfair Display',Georgia,serif;font-size:17pt;font-weight:700;color:#fff;line-height:1.2;}
+  .day-date{font-size:8pt;color:var(--gold-light);letter-spacing:0.5px;margin-top:5px;}
+  h3{font-family:'Inter',Arial,sans-serif;font-size:8pt;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold);padding:5px 0 5px 12px;border-left:3px solid var(--gold);margin:20px 0 10px;page-break-after:avoid;break-after:avoid;}
+  p{margin-bottom:10px;font-size:10pt;line-height:1.7;color:#3a3a3a;}
+  ul,ol{margin:6px 0 12px;padding-left:0;list-style:none;}
+  ul li,ol li{position:relative;padding:5px 0 5px 26px;font-size:10pt;line-height:1.6;border-bottom:1px solid rgba(0,0,0,0.05);}
+  ul li:last-child,ol li:last-child{border-bottom:none;}
+  ul li::before{content:'\2605';position:absolute;left:0;top:6px;color:var(--gold);font-size:7pt;}
+  ol{counter-reset:li;}ol li{counter-increment:li;}
+  ol li::before{content:counter(li,decimal-leading-zero);position:absolute;left:0;top:5px;color:var(--gold);font-size:7.5pt;font-weight:700;}
+  strong{font-weight:600;color:var(--navy);}
+  hr{border:none;border-top:1px solid var(--border);margin:14px 0;}
+  blockquote{background:var(--cream);border-left:4px solid var(--gold);padding:12px 16px;margin:12px 0;font-style:italic;color:#555;font-size:9.5pt;border-radius:0 4px 4px 0;}
+  .info-table{width:100%;border-collapse:collapse;margin-bottom:28px;font-size:9.5pt;}
+  .info-table td{padding:9px 14px;border:1px solid var(--border);}
+  .info-table td:first-child{background:var(--navy);color:var(--gold-light);font-weight:600;font-size:7.5pt;letter-spacing:1.5px;text-transform:uppercase;width:130px;white-space:nowrap;}
+  @page{margin:14mm 14mm 18mm;size:A4;}
 </style>
 </head>
 <body>
@@ -802,30 +794,33 @@ code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-fam
     <line x1="120" y1="0" x2="40" y2="80" stroke="white" stroke-width="1.5"/>
     <line x1="160" y1="0" x2="80" y2="80" stroke="white" stroke-width="1.5"/>
   </svg>
-  <div class="cover-label">✶ ${lang==='ja'?'AI 旅程プランナー':'AI Travel Itinerary'}</div>
+  <div class="cover-label">â¶ ${lang==='ja'?'AI æç¨ãã©ã³ãã¼':'AI Travel Itinerary'}</div>
   <div class="cover-destination">${escH(destination)}</div>
-  ${fromCity ? `<div class="cover-from">${lang === 'ja' ? '出発地 &mdash; ' : 'from &mdash; '}<strong>${escH(fromCity)}</strong></div>` : ''}
+  ${fromCity ? `<div class="cover-from">${lang === 'ja' ? 'åºçºå° &mdash; ' : 'from &mdash; '}<strong>${escH(fromCity)}</strong></div>` : ''}
   <div class="cover-rule"></div>
   <div class="cover-stats">
-    ${dateStr    ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}</div><div class="cover-stat-value">${escH(dateStr)}</div></div>` : ''}
-    ${duration   ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'日程':'Duration'}</div><div class="cover-stat-value">${escH(duration)}</div></div>` : ''}
-    ${people     ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'人数':'Travelers'}</div><div class="cover-stat-value">${escH(people)}</div></div>` : ''}
+    ${dateStr    ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'æè¡æé':'Dates'}</div><div class="cover-stat-value">${escH(dateStr)}</div></div>` : ''}
+    ${duration   ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'æ¥ç¨':'Duration'}</div><div class="cover-stat-value">${escH(duration)}</div></div>` : ''}
+    ${people     ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'äººæ°':'Travelers'}</div><div class="cover-stat-value">${escH(people)}</div></div>` : ''}
   </div>
 </div><div class="print-bar">
-  <button class="print-btn" onclick="window.print()">🖨&thinsp; ${lang==='ja'?'PDFとして保存':'Save as PDF'}</button>
-  <span class="print-hint">${lang==='ja'?'印刷ダイアログ →「詳細設定」→「背景のグラフィック」をオン にしてください。宛先：PDFとして保存 ／ 余白：なし推奨':'Print dialog → More settings → enable "Background graphics" for colors. Destination: Save as PDF · Margins: None'}</span>
+  <button class="print-btn" onclick="window.print()">ð¨&thinsp; ${lang==='ja'?'PDFã¨ãã¦ä¿å­':'Save as PDF'}</button>
+  <span class="print-hint">${lang==='ja'?'å°å·ãã¤ã¢ã­ã° âãè©³ç´°è¨­å®ãâãèæ¯ã®ã°ã©ãã£ãã¯ãããªã³ ã«ãã¦ãã ãããå®åï¼PDFã¨ãã¦ä¿å­ ï¼ ä½ç½ï¼ãªãæ¨å¥¨':'Print dialog â More settings â enable "Background graphics" for colors. Destination: Save as PDF Â· Margins: None'}</span>
 </div>
 
 <div class="content">
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   var dayCount = 0;
-  document.querySelectorAll('h2').forEach(function(h) {
-    dayCount++;
-    var num = String(dayCount).padStart(2,'0');
-    var txt = h.textContent;
-    h.innerHTML = '<div class="h2-inner"><span class="h2-num">' + num + '</span><span class="h2-text">' + txt + '</span></div>';
-  });
+  document.querySelectorAll('h2').forEach(function(h,i){
+        var num=String(i+1).padStart(2,'0');
+        var txt=h.textContent.trim();
+        var titleText=txt.replace(/^day\s*\d+[:\s\u2013\-]*/i,'').trim()||txt;
+        var block=document.createElement('div');
+        block.className='day-block';
+        block.innerHTML='<div class="day-left"><div class="day-lbl">Day</div><div class="day-num">'+num+'</div></div><div class="day-right"><div class="day-title">'+titleText+'</div></div>';
+        h.parentNode.replaceChild(block,h);
+      });
 });
 <\/script>
 ${contentHTML}
@@ -844,12 +839,12 @@ ${contentHTML}
         const win = window.open(url, '_blank');
         if (!win) {
             URL.revokeObjectURL(url);
-            showToast(lang === 'ja' ? 'ポップアップをブロックされています。アドレスバー右のアイコンから許可してください。' : 'Popup blocked — click the icon in the address bar to allow popups.', 'error');
+            showToast(lang === 'ja' ? 'ãããã¢ããããã­ãã¯ããã¦ãã¾ããã¢ãã¬ã¹ãã¼å³ã®ã¢ã¤ã³ã³ããè¨±å¯ãã¦ãã ããã' : 'Popup blocked â click the icon in the address bar to allow popups.', 'error');
         } else {
             setTimeout(() => URL.revokeObjectURL(url), 120000);
         }
     } catch(e) {
-        showToast(lang === 'ja' ? 'PDF生成に失敗しました。' : 'Failed to generate PDF.', 'error');
+        showToast(lang === 'ja' ? 'PDFçæã«å¤±æãã¾ããã' : 'Failed to generate PDF.', 'error');
     }
 }
 function copyMarkdown() {
@@ -859,7 +854,7 @@ function copyMarkdown() {
         .catch(() => showToast(t('toast_copy_fail'), 'error'));
 }
 
-// ── History ─────────────────────────────────────────────────────
+// ââ History âââââââââââââââââââââââââââââââââââââââââââââââââââââ
 function saveToHistory() {
     if (!currentItinerary) return;
     const history = getHistory();
@@ -883,7 +878,7 @@ function renderHistory() {
     c.innerHTML = history.map(item => `
         <div class="history-card flex items-center justify-between bg-gray-50 active:bg-purple-50 rounded-xl p-3 border border-gray-100 mb-2 cursor-pointer" onclick="loadHistory(${item.id})">
             <div class="flex items-center gap-2.5 flex-1 min-w-0">
-                <span class="text-xl shrink-0">🗺️</span>
+                <span class="text-xl shrink-0">ðºï¸</span>
                 <div class="min-w-0">
                     <div class="flex items-center gap-1.5">
                         <p class="text-xs font-semibold text-gray-700 truncate">${esc(item.title)}</p>
@@ -894,7 +889,7 @@ function renderHistory() {
             </div>
             <div class="flex items-center gap-1.5 ml-2 shrink-0">
                 <button onclick="event.stopPropagation();loadHistory(${item.id})" class="text-xs text-purple-600 bg-purple-100 px-2.5 py-1.5 rounded-lg font-medium">${esc(t('history_show'))}</button>
-                <button onclick="event.stopPropagation();deleteHistory(${item.id})" class="text-xs text-gray-400 bg-gray-100 px-2 py-1.5 rounded-lg">✕</button>
+                <button onclick="event.stopPropagation();deleteHistory(${item.id})" class="text-xs text-gray-400 bg-gray-100 px-2 py-1.5 rounded-lg">â</button>
             </div>
         </div>`).join('');
 }
@@ -947,7 +942,7 @@ function clearHistory() {
     showToast(t('toast_history_cleared'));
 }
 
-// ── Utilities ───────────────────────────────────────────────────
+// ââ Utilities âââââââââââââââââââââââââââââââââââââââââââââââââââ
 function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 let toastTimer;
 function showToast(msg, type = 'success') {
