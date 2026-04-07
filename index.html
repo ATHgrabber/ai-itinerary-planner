@@ -735,7 +735,7 @@ function printPDF() {
 <title>${escH(destination)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Montserrat:wght@500;600;700&family=Lato:ital,wght@0,300;0,400;0,700;1,300&family=Noto+Serif+JP:wght@600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--navy:#0C1A35;--navy-mid:#1A3356;--gold:#B8922A;--gold-light:#D4AB4E;--gold-pale:#F9F3E6;--ink:#1E1E1E;--muted:#666;--rule:#DDD;--bg:#FDFBF7;}
@@ -797,29 +797,21 @@ code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-fam
   <div class="deco-arc2"></div>
   <svg class="deco-lines" viewBox="0 0 160 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
     <line x1="0" y1="0" x2="-80" y2="80" stroke="white" stroke-width="1.5"/>
-    <line x1="20" y1="0" x2="-60" y2="80" stroke="white" stroke-width="1.5"/>
     <line x1="40" y1="0" x2="-40" y2="80" stroke="white" stroke-width="1.5"/>
-    <line x1="60" y1="0" x2="-20" y2="80" stroke="white" stroke-width="1.5"/>
     <line x1="80" y1="0" x2="0" y2="80" stroke="white" stroke-width="1.5"/>
-    <line x1="100" y1="0" x2="20" y2="80" stroke="white" stroke-width="1.5"/>
     <line x1="120" y1="0" x2="40" y2="80" stroke="white" stroke-width="1.5"/>
-    <line x1="140" y1="0" x2="60" y2="80" stroke="white" stroke-width="1.5"/>
     <line x1="160" y1="0" x2="80" y2="80" stroke="white" stroke-width="1.5"/>
   </svg>
   <div class="cover-label">✶ ${lang==='ja'?'AI 旅程プランナー':'AI Travel Itinerary'}</div>
   <div class="cover-destination">${escH(destination)}</div>
   ${fromCity ? `<div class="cover-from">${lang === 'ja' ? '出発地 &mdash; ' : 'from &mdash; '}<strong>${escH(fromCity)}</strong></div>` : ''}
-  <div class="accent-bar"></div>
-  <div class="cover-stats">
-    ${dateStr    ? `<div><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}</div><div class="cover-stat-value">${escH(dateStr)}</div></div>` : ''}
   <div class="cover-rule"></div>
   <div class="cover-stats">
-    ${dateStr    ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}
-    ${duration   ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'日程':'Duration'}
-    ${people     ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'人数':'Travelers'}
+    ${dateStr    ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'旅行期間':'Dates'}</div><div class="cover-stat-value">${escH(dateStr)}</div></div>` : ''}
+    ${duration   ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'日程':'Duration'}</div><div class="cover-stat-value">${escH(duration)}</div></div>` : ''}
+    ${people     ? `<div class="cover-stat"><div class="cover-stat-label">${lang==='ja'?'人数':'Travelers'}</div><div class="cover-stat-value">${escH(people)}</div></div>` : ''}
   </div>
-</div>
-<div class="print-bar">
+</div><div class="print-bar">
   <button class="print-btn" onclick="window.print()">🖨&thinsp; ${lang==='ja'?'PDFとして保存':'Save as PDF'}</button>
   <span class="print-hint">${lang==='ja'?'印刷ダイアログ →「詳細設定」→「背景のグラフィック」をオン にしてください。宛先：PDFとして保存 ／ 余白：なし推奨':'Print dialog → More settings → enable "Background graphics" for colors. Destination: Save as PDF · Margins: None'}</span>
 </div>
@@ -827,21 +819,21 @@ code{background:#EEE9DF;padding:1px 5px;border-radius:2px;font-size:8pt;font-fam
 <div class="content">
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  let dayCount = 0;
+  var dayCount = 0;
   document.querySelectorAll('h2').forEach(function(h) {
     dayCount++;
     var num = String(dayCount).padStart(2,'0');
     var txt = h.textContent;
-    h.innerHTML = '<div class="h2-inner"><span class="h2-num">' + num + '<\/span><span class="h2-text">' + txt + '<\/span><\/div>';
+    h.innerHTML = '<div class="h2-inner"><span class="h2-num">' + num + '</span><span class="h2-text">' + txt + '</span></div>';
   });
 });
 <\/script>
 ${contentHTML}
 <div class="pdf-footer">
-  <div><span class="pdf-footer-dot"><\/span> AI Travel Planner<\/div>
-  <span>${escH(generatedDate)}<\/span>
-<\/div>
-<\/div>
+  <div><span class="pdf-footer-dot"></span> AI Travel Planner</div>
+  <span>${escH(generatedDate)}</span>
+</div>
+</div>
 
 </body>
 </html>`;
